@@ -1,4 +1,4 @@
-# Below is a list of all problems. They are ordered in list of percieved importance.
+## Below is a list of all problems. They are ordered in list of percieved importance.
 1. **RAINBOW IN CONSOLE OUTPUT!!!**
     1. 'this.quizEngine.timer.getState' is not a function [*Via console output*]
 2. Can't select units in unit quiz option
