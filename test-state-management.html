@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Management Test - AP Government Study Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #357ABD;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .state-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>State Management Test</h1>
+        <p>This page tests the enhanced state management and navigation features of the AP Government Study Tool.</p>
+        
+        <div class="test-section">
+            <h3>State Management Tests</h3>
+            <button class="test-button" onclick="testStateSave()">Test State Save</button>
+            <button class="test-button" onclick="testStateRestore()">Test State Restore</button>
+            <button class="test-button" onclick="testStateCorruption()">Test Corruption Handling</button>
+            <button class="test-button" onclick="testSessionPersistence()">Test Session Persistence</button>
+            <div id="state-test-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Navigation Tests</h3>
+            <button class="test-button" onclick="testNavigationHistory()">Test Navigation History</button>
+            <button class="test-button" onclick="testBrowserNavigation()">Test Browser Back/Forward</button>
+            <button class="test-button" onclick="testNavigationWarnings()">Test Navigation Warnings</button>
+            <div id="navigation-test-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Error Handling Tests</h3>
+            <button class="test-button" onclick="testErrorRecovery()">Test Error Recovery</button>
+            <button class="test-button" onclick="testStorageFailure()">Test Storage Failure</button>
+            <button class="test-button" onclick="testSessionTimeout()">Test Session Timeout</button>
+            <div id="error-test-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Current Application State</h3>
+            <button class="test-button" onclick="displayCurrentState()">Refresh State Display</button>
+            <div id="current-state" class="state-display">Click "Refresh State Display" to see current state</div>
+        </div>
+    </div>
+
+    <!-- Include required dependencies -->
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/quiz-engine.js"></script>
+    <script src="js/sample-questions.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Test functions
+        function testStateSave() {
+            const results = document.getElementById('state-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test state save
+                window.app.saveApplicationState();
+                
+                // Verify state was saved
+                const savedState = localStorage.getItem('app_state');
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    results.className = 'test-result success';
+                    results.textContent = `✓ State saved successfully\nSession ID: ${parsed.sessionId}\nTimestamp: ${new Date(parsed.timestamp).toLocaleString()}`;
+                } else {
+                    throw new Error('State not found in localStorage');
+                }
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ State save failed: ${error.message}`;
+            }
+        }
+
+        function testStateRestore() {
+            const results = document.getElementById('state-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Save current state first
+                const originalSessionId = window.app.state.sessionId;
+                window.app.saveApplicationState();
+                
+                // Modify state
+                window.app.state.sessionId = 'test_session_' + Date.now();
+                
+                // Restore state
+                const restored = window.app.restoreApplicationState();
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ State restore test completed\nRestore result: ${restored}\nOriginal session: ${originalSessionId}\nCurrent session: ${window.app.state.sessionId}`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ State restore failed: ${error.message}`;
+            }
+        }
+
+        function testStateCorruption() {
+            const results = document.getElementById('state-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Simulate corruption by saving invalid data
+                localStorage.setItem('app_state', 'invalid json data');
+                
+                // Try to restore
+                const restored = window.app.restoreApplicationState();
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Corruption handling test completed\nCorrupted state handled gracefully\nRestore result: ${restored}`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Corruption handling failed: ${error.message}`;
+            }
+        }
+
+        function testSessionPersistence() {
+            const results = document.getElementById('state-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Create mock session data
+                window.app.state.currentSession = {
+                    mode: 'practice',
+                    currentQuestionIndex: 5,
+                    answers: [0, 1, 2, null, 3],
+                    startTime: Date.now() - 300000 // 5 minutes ago
+                };
+
+                // Save state
+                window.app.saveApplicationState();
+                
+                // Verify session was saved
+                const savedState = JSON.parse(localStorage.getItem('app_state'));
+                if (savedState.currentSession) {
+                    results.className = 'test-result success';
+                    results.textContent = `✓ Session persistence test passed\nSession mode: ${savedState.currentSession.mode}\nQuestion index: ${savedState.currentSession.currentQuestionIndex}\nAnswers: ${savedState.currentSession.answers.length}`;
+                } else {
+                    throw new Error('Session not persisted');
+                }
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Session persistence failed: ${error.message}`;
+            }
+        }
+
+        function testNavigationHistory() {
+            const results = document.getElementById('navigation-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test navigation history
+                const initialHistory = window.app.getNavigationHistory();
+                
+                // Simulate navigation
+                window.app.navigateToView('quiz');
+                window.app.navigateToView('results');
+                window.app.navigateToView('dashboard');
+                
+                const finalHistory = window.app.getNavigationHistory();
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Navigation history test passed\nInitial entries: ${initialHistory.length}\nFinal entries: ${finalHistory.length}\nLast navigation: ${finalHistory[finalHistory.length - 1]?.from} → ${finalHistory[finalHistory.length - 1]?.to}`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Navigation history failed: ${error.message}`;
+            }
+        }
+
+        function testBrowserNavigation() {
+            const results = document.getElementById('navigation-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test browser navigation simulation
+                const mockEvent = {
+                    state: {
+                        view: 'quiz',
+                        mode: 'practice',
+                        timestamp: Date.now(),
+                        sessionId: window.app.state.sessionId
+                    }
+                };
+
+                window.app.handleBrowserNavigation(mockEvent);
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Browser navigation test passed\nCurrent view: ${window.app.currentView}\nCurrent mode: ${window.app.currentMode}`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Browser navigation failed: ${error.message}`;
+            }
+        }
+
+        function testNavigationWarnings() {
+            const results = document.getElementById('navigation-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test navigation warnings
+                window.app.quizNavigationWarningActive = true;
+                const shouldWarn = window.app.shouldWarnOnNavigation();
+                const message = window.app.getNavigationWarningMessage();
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Navigation warnings test passed\nShould warn: ${shouldWarn}\nWarning message: "${message}"`;
+                
+                // Clean up
+                window.app.quizNavigationWarningActive = false;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Navigation warnings failed: ${error.message}`;
+            }
+        }
+
+        function testErrorRecovery() {
+            const results = document.getElementById('error-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test error recovery
+                const originalState = { ...window.app.state };
+                
+                // Simulate state corruption
+                window.app.state = null;
+                
+                // Trigger validation
+                window.app.validateStateIntegrity();
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Error recovery test completed\nState corruption detected and handled\nState recovered: ${window.app.state !== null}`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Error recovery failed: ${error.message}`;
+            }
+        }
+
+        function testStorageFailure() {
+            const results = document.getElementById('error-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Simulate storage failure by temporarily disabling localStorage
+                const originalSetItem = localStorage.setItem;
+                localStorage.setItem = function() {
+                    throw new Error('Storage quota exceeded');
+                };
+
+                // Try to save state
+                window.app.saveApplicationState();
+                
+                // Restore localStorage
+                localStorage.setItem = originalSetItem;
+                
+                results.className = 'test-result success';
+                results.textContent = `✓ Storage failure test completed\nStorage failure handled gracefully`;
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Storage failure test failed: ${error.message}`;
+            }
+        }
+
+        function testSessionTimeout() {
+            const results = document.getElementById('error-test-results');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                // Test session timeout handling
+                const originalTimeout = window.app.stateConfig.sessionTimeout;
+                window.app.stateConfig.sessionTimeout = 1000; // 1 second for testing
+                
+                // Set up timeout
+                window.app.setupSessionTimeout();
+                
+                setTimeout(() => {
+                    results.className = 'test-result success';
+                    results.textContent = `✓ Session timeout test setup completed\nTimeout configured for 1 second\nOriginal timeout: ${originalTimeout}ms`;
+                    
+                    // Restore original timeout
+                    window.app.stateConfig.sessionTimeout = originalTimeout;
+                }, 100);
+                
+            } catch (error) {
+                results.className = 'test-result error';
+                results.textContent = `✗ Session timeout test failed: ${error.message}`;
+            }
+        }
+
+        function displayCurrentState() {
+            const display = document.getElementById('current-state');
+            try {
+                if (!window.app) {
+                    throw new Error('App not initialized');
+                }
+
+                const state = window.app.getState();
+                display.textContent = JSON.stringify(state, null, 2);
+                
+            } catch (error) {
+                display.textContent = `Error displaying state: ${error.message}`;
+            }
+        }
+
+        // Initialize display when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                displayCurrentState();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

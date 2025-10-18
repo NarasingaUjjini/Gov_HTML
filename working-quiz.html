@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Government Quiz - Working Version</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            border-left: 4px solid #4A90E2;
+        }
+        .question h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .option { 
+            display: block; 
+            margin: 10px 0; 
+            padding: 15px; 
+            background: white; 
+            border: 2px solid #e9ecef; 
+            cursor: pointer; 
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        .option:hover { 
+            background: #e9ecef; 
+            border-color: #4A90E2;
+        }
+        .option.selected { 
+            background: #4A90E2; 
+            color: white; 
+            border-color: #4A90E2;
+        }
+        button { 
+            padding: 12px 24px; 
+            margin: 8px; 
+            background: #4A90E2; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        button:disabled { 
+            background: #6c757d; 
+            cursor: not-allowed; 
+        }
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .progress {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: #4A90E2;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .score {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .feedback {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AP Government Quiz</h1>
+        
+        <div id="start-screen">
+            <p>Test your knowledge of AP United States Government and Politics!</p>
+            <button id="start-btn">Start Quiz</button>
+        </div>
+        
+        <div id="quiz-screen" style="display: none;">
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <div id="question-display"></div>
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+                <div id="debug-info" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+            </div>
+        </div>
+        
+        <div id="results-screen" style="display: none;">
+            <h2>Quiz Complete!</h2>
+            <div id="final-score" class="score"></div>
+            <button id="restart-btn">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample AP Government questions
+        const questions = [
+            {
+                question: "Which amendment to the Constitution guarantees freedom of speech?",
+                options: ["First Amendment", "Second Amendment", "Fourth Amendment", "Fifth Amendment"],
+                correct: 0,
+                explanation: "The First Amendment protects freedom of speech, religion, press, assembly, and petition."
+            },
+            {
+                question: "How many branches of government are there in the United States?",
+                options: ["Two", "Three", "Four", "Five"],
+                correct: 1,
+                explanation: "The three branches are Legislative (Congress), Executive (President), and Judicial (Courts)."
+            },
+            {
+                question: "What is the system called that prevents any one branch of government from becoming too powerful?",
+                options: ["Federalism", "Checks and balances", "Separation of powers", "Popular sovereignty"],
+                correct: 1,
+                explanation: "Checks and balances allows each branch to limit the power of the other branches."
+            },
+            {
+                question: "How many senators does each state have in the U.S. Senate?",
+                options: ["One", "Two", "Three", "It depends on population"],
+                correct: 1,
+                explanation: "Each state has exactly two senators, regardless of population size."
+            },
+            {
+                question: "What is the minimum age requirement to be President of the United States?",
+                options: ["30 years old", "35 years old", "40 years old", "45 years old"],
+                correct: 1,
+                explanation: "The Constitution requires the President to be at least 35 years old."
+            },
+            {
+                question: "Which clause in the Constitution gives Congress the power to regulate interstate commerce?",
+                options: ["Necessary and Proper Clause", "Commerce Clause", "Supremacy Clause", "Equal Protection Clause"],
+                correct: 1,
+                explanation: "The Commerce Clause gives Congress the power to regulate trade between states."
+            },
+            {
+                question: "What is the term length for a U.S. Representative?",
+                options: ["2 years", "4 years", "6 years", "8 years"],
+                correct: 0,
+                explanation: "Representatives serve 2-year terms and must run for re-election every even-numbered year."
+            },
+            {
+                question: "Which court case established the principle of judicial review?",
+                options: ["Brown v. Board of Education", "Marbury v. Madison", "Plessy v. Ferguson", "Roe v. Wade"],
+                correct: 1,
+                explanation: "Marbury v. Madison (1803) established that the Supreme Court can declare laws unconstitutional."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+        let score = 0;
+        let answers = [];
+
+        function showScreen(screenId) {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('results-screen').style.display = 'none';
+            document.getElementById(screenId).style.display = 'block';
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('question-display');
+            
+            // Clear any existing content and feedback
+            container.innerHTML = '';
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>Question ${currentQuestionIndex + 1} of ${questions.length}</h3>
+                    <p>${question.question}</p>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" data-index="${index}">
+                                ${String.fromCharCode(65 + index)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add click handlers with debugging
+            console.log(`Setting up question ${currentQuestionIndex + 1} event handlers`);
+            container.querySelectorAll('.option').forEach((option, index) => {
+                option.addEventListener('click', () => {
+                    console.log(`Option ${index} clicked for question ${currentQuestionIndex + 1}`);
+                    // Clear previous selection
+                    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    // Select this option
+                    option.classList.add('selected');
+                    selectedAnswer = parseInt(option.dataset.index);
+                    const submitBtn = document.getElementById('submit-btn');
+                    submitBtn.disabled = false;
+                    submitBtn.style.display = 'inline-block';
+                    console.log(`Selected answer: ${selectedAnswer}, submit button enabled: ${!submitBtn.disabled}`);
+                    
+                    // Update debug info
+                    const debugInfo = document.getElementById('debug-info');
+                    if (debugInfo) {
+                        debugInfo.textContent = `Answer selected: ${selectedAnswer}, Submit enabled: ${!submitBtn.disabled}`;
+                    }
+                });
+            });
+
+            selectedAnswer = null;
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'inline-block';
+            nextBtn.style.display = 'none';
+            
+            console.log(`Question ${currentQuestionIndex + 1} displayed, submit button disabled: ${submitBtn.disabled}`);
+            updateProgress();
+        }
+
+        function submitAnswer() {
+            console.log(`Submitting answer for question ${currentQuestionIndex + 1}: ${selectedAnswer}`);
+            if (selectedAnswer === null) {
+                console.log('No answer selected, returning');
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correct;
+            console.log(`Answer is ${isCorrect ? 'correct' : 'incorrect'}`);
+            
+            answers.push({
+                questionIndex: currentQuestionIndex,
+                selectedAnswer: selectedAnswer,
+                correct: isCorrect
+            });
+
+            if (isCorrect) {
+                score++;
+            }
+
+            // Show feedback
+            const container = document.getElementById('question-display');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackDiv.innerHTML = `
+                <strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>
+                ${!isCorrect ? `The correct answer is: <strong>${question.options[question.correct]}</strong><br>` : ''}
+                <em>${question.explanation}</em>
+            `;
+            
+            container.appendChild(feedbackDiv);
+
+            // Disable options and show next button
+            container.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'none');
+            document.getElementById('submit-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            console.log(`Moving to next question. Current: ${currentQuestionIndex}, Next: ${currentQuestionIndex + 1}`);
+            currentQuestionIndex++;
+            
+            // Clear any existing feedback
+            const existingFeedback = document.querySelector('.feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
+            // Reset selected answer
+            selectedAnswer = null;
+            
+            displayQuestion();
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let grade = '';
+            
+            if (percentage >= 90) grade = 'A';
+            else if (percentage >= 80) grade = 'B';
+            else if (percentage >= 70) grade = 'C';
+            else if (percentage >= 60) grade = 'D';
+            else grade = 'F';
+
+            document.getElementById('final-score').innerHTML = `
+                <div>You scored ${score} out of ${questions.length} questions correctly</div>
+                <div style="font-size: 36px; margin: 20px 0; color: #4A90E2;">${percentage}% (${grade})</div>
+                <div>Great job studying AP Government!</div>
+            `;
+            
+            showScreen('results-screen');
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            selectedAnswer = null;
+            score = 0;
+            answers = [];
+            showScreen('quiz-screen');
+            displayQuestion();
+        }
+
+        // Event listeners
+        document.getElementById('start-btn').addEventListener('click', startQuiz);
+        document.getElementById('submit-btn').addEventListener('click', submitAnswer);
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            showScreen('start-screen');
+        });
+
+        console.log('AP Government Quiz loaded successfully!');
+    </script>
+</body>
+</html>

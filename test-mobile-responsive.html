@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Responsive Test - AP Government Study Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+        }
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .device-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Mobile Responsive Test</h1>
+        <nav class="main-nav">
+            <button class="nav-btn active">Test Dashboard</button>
+        </nav>
+    </header>
+
+    <main class="app-main">
+        <div class="device-info">
+            <div>Screen Width: <span id="screen-width"></span>px</div>
+            <div>Screen Height: <span id="screen-height"></span>px</div>
+            <div>Device Pixel Ratio: <span id="device-pixel-ratio"></span></div>
+            <div>Touch Support: <span id="touch-support"></span></div>
+            <div>Orientation: <span id="orientation"></span></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Mode Selection Buttons (Touch Optimized)</div>
+            <div class="mode-buttons">
+                <button class="mode-btn">
+                    <div class="mode-icon">📚</div>
+                    <div class="mode-content">
+                        <div class="mode-title">Unit Quiz</div>
+                        <div class="mode-description">Focus on specific units with enhanced touch targets</div>
+                    </div>
+                </button>
+                <button class="mode-btn">
+                    <div class="mode-icon">⏱️</div>
+                    <div class="mode-content">
+                        <div class="mode-title">Practice Test</div>
+                        <div class="mode-description">Timed 55-question exam optimized for mobile</div>
+                    </div>
+                </button>
+                <button class="mode-btn">
+                    <div class="mode-icon">📖</div>
+                    <div class="mode-content">
+                        <div class="mode-title">Study Mode</div>
+                        <div class="mode-description">Unlimited practice with mobile-friendly interface</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Progress Chart (Mobile Responsive)</div>
+            <div class="progress-section">
+                <div class="section-header">
+                    <h3>Exam Study Progress</h3>
+                    <div class="progress-legend">
+                        <span class="legend-item">
+                            <span class="legend-color aptitude"></span>
+                            Aptitude
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color seen"></span>
+                            Questions Seen
+                        </span>
+                    </div>
+                </div>
+                <div class="progress-chart">
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <div class="progress-label">Unit 1: Foundations of American Democracy</div>
+                            <div class="progress-stats">Seen: 25/50 questions</div>
+                        </div>
+                        <div class="progress-bars">
+                            <div class="progress-bar">
+                                <div class="progress-fill aptitude" style="width: 75%"></div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill seen" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-percentage">75%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <div class="progress-label">Unit 2: Interactions Among Branches</div>
+                            <div class="progress-stats">Seen: 18/45 questions</div>
+                        </div>
+                        <div class="progress-bars">
+                            <div class="progress-bar">
+                                <div class="progress-fill aptitude" style="width: 60%"></div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill seen" style="width: 40%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-percentage">60%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Score Chart (Touch Interactive)</div>
+            <div class="analytics-section">
+                <div class="section-header">
+                    <h3>Practice Test Score Progression</h3>
+                    <div class="chart-info">
+                        <span>3 tests taken</span>
+                    </div>
+                </div>
+                <div class="score-chart">
+                    <canvas id="test-score-canvas" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Quiz Interface (Mobile Optimized)</div>
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <span>Question 15 of 55</span>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 27%"></div>
+                    </div>
+                </div>
+                <div class="quiz-timer">
+                    <span>45:32</span>
+                </div>
+            </div>
+
+            <div class="quiz-content">
+                <div class="question-container">
+                    <div class="question-text">
+                        Which of the following best describes the concept of federalism in the United States government system?
+                    </div>
+                    <div class="answer-options">
+                        <label class="answer-option">
+                            <input type="radio" name="test-answer" value="A">
+                            <span class="answer-text">A) The central government has complete authority over all state governments</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="test-answer" value="B">
+                            <span class="answer-text">B) Power is shared between national and state governments</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="test-answer" value="C">
+                            <span class="answer-text">C) State governments have complete autonomy from federal oversight</span>
+                        </label>
+                        <label class="answer-option">
+                            <input type="radio" name="test-answer" value="D">
+                            <span class="answer-text">D) Local governments have supreme authority over state and federal governments</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="control-btn">Previous</button>
+                <button class="control-btn">Next</button>
+                <button class="control-btn primary">Submit</button>
+                <button class="control-btn secondary">End Quiz</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">Question Status Grid (Touch Friendly)</div>
+            <div class="question-status">
+                <h4>Question Progress</h4>
+                <div class="status-grid">
+                    <div class="status-item current">15</div>
+                    <div class="status-item answered">1</div>
+                    <div class="status-item answered">2</div>
+                    <div class="status-item answered">3</div>
+                    <div class="status-item unanswered">4</div>
+                    <div class="status-item unanswered">5</div>
+                    <div class="status-item unanswered">6</div>
+                    <div class="status-item unanswered">7</div>
+                    <div class="status-item unanswered">8</div>
+                    <div class="status-item unanswered">9</div>
+                    <div class="status-item unanswered">10</div>
+                    <div class="status-item unanswered">11</div>
+                    <div class="status-item unanswered">12</div>
+                    <div class="status-item unanswered">13</div>
+                    <div class="status-item unanswered">14</div>
+                    <div class="status-item unanswered">16</div>
+                    <div class="status-item unanswered">17</div>
+                    <div class="status-item unanswered">18</div>
+                    <div class="status-item unanswered">19</div>
+                    <div class="status-item unanswered">20</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2024 AP Government Study Tool - Mobile Responsive Test</p>
+    </footer>
+
+    <script src="js/score-chart.js"></script>
+    <script>
+        // Update device info
+        function updateDeviceInfo() {
+            document.getElementById('screen-width').textContent = window.innerWidth;
+            document.getElementById('screen-height').textContent = window.innerHeight;
+            document.getElementById('device-pixel-ratio').textContent = window.devicePixelRatio || 1;
+            document.getElementById('touch-support').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+            document.getElementById('orientation').textContent = window.innerHeight > window.innerWidth ? 'Portrait' : 'Landscape';
+        }
+
+        // Initialize device info
+        updateDeviceInfo();
+        window.addEventListener('resize', updateDeviceInfo);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(updateDeviceInfo, 100);
+        });
+
+        // Initialize test score chart
+        const testChart = new ScoreChart('test-score-canvas');
+        const testData = [
+            { date: '2024-01-15', score: 35, total: 55, percentage: 64 },
+            { date: '2024-01-22', score: 42, total: 55, percentage: 76 },
+            { date: '2024-01-29', score: 47, total: 55, percentage: 85 }
+        ];
+        testChart.updateData(testData);
+
+        // Add touch feedback for buttons
+        document.querySelectorAll('.mode-btn, .control-btn, .answer-option, .status-item').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Test answer selection
+        document.querySelectorAll('input[name="test-answer"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                this.closest('.answer-option').classList.add('selected');
+            });
+        });
+
+        console.log('Mobile responsive test initialized');
+        console.log('Screen dimensions:', window.innerWidth, 'x', window.innerHeight);
+        console.log('Touch support:', 'ontouchstart' in window);
+        console.log('Device pixel ratio:', window.devicePixelRatio || 1);
+    </script>
+</body>
+</html>

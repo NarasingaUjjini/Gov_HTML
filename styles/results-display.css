@@ -1,0 +1,718 @@
+/**
+ * Results Display Styles
+ * Comprehensive styling for quiz results and performance analytics
+ */
+
+/* Results Container */
+.results-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Results Header */
+.results-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e8f4fd;
+}
+
+.results-title {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.score-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-score {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+}
+
+.score-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.score-percentage {
+    font-size: 36px;
+    font-weight: 600;
+}
+
+.performance-level {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Performance Level Colors */
+.performance-excellent .score-percentage,
+.performance-excellent .performance-level {
+    color: #27ae60;
+}
+
+.performance-excellent .performance-level {
+    background: #d5f4e6;
+}
+
+.performance-good .score-percentage,
+.performance-good .performance-level {
+    color: #2980b9;
+}
+
+.performance-good .performance-level {
+    background: #d6eaf8;
+}
+
+.performance-satisfactory .score-percentage,
+.performance-satisfactory .performance-level {
+    color: #f39c12;
+}
+
+.performance-satisfactory .performance-level {
+    background: #fdeaa7;
+}
+
+.performance-needs-improvement .score-percentage,
+.performance-needs-improvement .performance-level {
+    color: #e67e22;
+}
+
+.performance-needs-improvement .performance-level {
+    background: #fad7a0;
+}
+
+.performance-poor .score-percentage,
+.performance-poor .performance-level {
+    color: #e74c3c;
+}
+
+.performance-poor .performance-level {
+    background: #fadbd8;
+}
+
+/* Timing Information */
+.timing-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.time-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.time-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.time-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Main Content */
+.results-main-content {
+    margin-bottom: 30px;
+}
+
+/* Unit Results */
+.unit-results {
+    display: grid;
+    gap: 25px;
+}
+
+.unit-info {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.unit-info h3 {
+    font-size: 22px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.aptitude-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.aptitude-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.aptitude-score {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4a90e2;
+}
+
+.question-breakdown h4 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.breakdown-stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    min-width: 100px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-value.correct {
+    color: #27ae60;
+}
+
+.stat-value.incorrect {
+    color: #e74c3c;
+}
+
+.stat-value.unanswered {
+    color: #f39c12;
+}
+
+/* Practice Results */
+.practice-results {
+    display: grid;
+    gap: 25px;
+}
+
+.ap-score-estimate {
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+}
+
+.ap-score-estimate h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.ap-score-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.ap-score-number {
+    font-size: 64px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ap-score-description {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Unit Breakdown Chart */
+.unit-breakdown-chart {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.unit-breakdown-chart h4 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.breakdown-bars {
+    display: grid;
+    gap: 15px;
+}
+
+.unit-bar-container {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+.unit-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.unit-bar {
+    position: relative;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.unit-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+    border-radius: 15px;
+    transition: width 0.8s ease-in-out;
+}
+
+.unit-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Strengths and Weaknesses */
+.strengths-weaknesses {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.strengths-section,
+.weaknesses-section {
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.strengths-section {
+    background: #d5f4e6;
+    border-left: 4px solid #27ae60;
+}
+
+.weaknesses-section {
+    background: #fadbd8;
+    border-left: 4px solid #e74c3c;
+}
+
+.strengths-title,
+.weaknesses-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.strength-items,
+.weakness-items {
+    display: grid;
+    gap: 10px;
+}
+
+.strength-item,
+.weakness-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+}
+
+.unit-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.unit-score {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.strength-item .unit-score {
+    color: #27ae60;
+}
+
+.weakness-item .unit-score {
+    color: #e74c3c;
+}
+
+/* Study Results */
+.study-results {
+    display: grid;
+    gap: 25px;
+}
+
+.learning-progress {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.learning-progress h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.progress-stats {
+    display: grid;
+    gap: 15px;
+}
+
+.progress-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.progress-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.progress-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.progress-value.trend-improving {
+    color: #27ae60;
+}
+
+.progress-value.trend-declining {
+    color: #e74c3c;
+}
+
+.progress-value.trend-stable {
+    color: #f39c12;
+}
+
+/* Recommendations */
+.recommendations-section {
+    padding: 20px;
+    background: #e8f4fd;
+    border-radius: 8px;
+    border-left: 4px solid #4a90e2;
+}
+
+.recommendations-section h4 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.recommendations-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recommendations-list li {
+    padding: 8px 0;
+    color: #2c3e50;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 20px;
+}
+
+.recommendations-list li:before {
+    content: "💡";
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+/* Action Buttons */
+.results-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding-top: 20px;
+    border-top: 2px solid #e8f4fd;
+}
+
+.results-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+}
+
+.btn-neutral {
+    background: #e9ecef;
+    color: #2c3e50;
+    border: 1px solid #ced4da;
+}
+
+.btn-neutral:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .results-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .results-title {
+        font-size: 24px;
+    }
+    
+    .score-number {
+        font-size: 36px;
+    }
+    
+    .score-percentage {
+        font-size: 28px;
+    }
+    
+    .main-score {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .timing-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .breakdown-stats {
+        flex-direction: column;
+    }
+    
+    .strengths-weaknesses {
+        grid-template-columns: 1fr;
+    }
+    
+    .unit-bar-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .results-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .results-btn {
+        width: 100%;
+        min-height: 48px;
+        font-size: 1rem;
+    }
+    
+    /* Enhanced touch targets for mobile */
+    .stat-item {
+        min-height: 60px;
+        padding: 12px;
+    }
+    
+    .unit-bar {
+        height: 35px;
+    }
+    
+    .unit-bar-text {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .results-container {
+        margin: 5px;
+        padding: 12px;
+    }
+    
+    .results-title {
+        font-size: 20px;
+    }
+    
+    .score-number {
+        font-size: 32px;
+    }
+    
+    .score-percentage {
+        font-size: 24px;
+    }
+    
+    .ap-score-number {
+        font-size: 48px;
+    }
+    
+    .unit-breakdown-chart,
+    .learning-progress,
+    .recommendations-section {
+        padding: 12px;
+    }
+    
+    .timing-info {
+        padding: 12px;
+    }
+    
+    .time-stat {
+        gap: 3px;
+    }
+    
+    .time-label {
+        font-size: 12px;
+    }
+    
+    .time-value {
+        font-size: 16px;
+    }
+    
+    .breakdown-stats {
+        gap: 10px;
+    }
+    
+    .stat-item {
+        min-height: 50px;
+        padding: 10px;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+    }
+    
+    .stat-value {
+        font-size: 20px;
+    }
+    
+    .unit-bar {
+        height: 30px;
+    }
+    
+    .unit-bar-text {
+        font-size: 11px;
+    }
+    
+    .unit-label {
+        font-size: 12px;
+    }
+    
+    .performance-level {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+    
+    .recommendations-list li {
+        font-size: 13px;
+        padding: 6px 0;
+        padding-left: 18px;
+    }
+    
+    .results-btn {
+        min-height: 48px;
+        font-size: 0.95rem;
+        padding: 12px 20px;
+    }
+}
+
+/* Touch device optimizations for results */
+@media (hover: none) and (pointer: coarse) {
+    .results-btn:hover {
+        transform: none;
+    }
+    
+    .results-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .stat-item {
+        /* Better touch feedback */
+        transition: background-color 0.2s ease;
+    }
+    
+    .stat-item:active {
+        background-color: #f0f0f0;
+    }
+}

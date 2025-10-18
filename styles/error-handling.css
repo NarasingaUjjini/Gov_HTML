@@ -1,0 +1,583 @@
+/**
+ * Error Handling and User Feedback Styles
+ * Comprehensive styling for notifications, modals, loading states, and error boundaries
+ */
+
+/* Notification Container */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+    max-width: 400px;
+}
+
+/* Notification Styles */
+.notification {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 12px;
+    overflow: hidden;
+    pointer-events: auto;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+    border-left: 4px solid #ddd;
+}
+
+.notification.notification-enter {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.notification.notification-visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.notification-exit {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Notification Types */
+.notification-info {
+    border-left-color: #4A90E2;
+}
+
+.notification-success {
+    border-left-color: #7ED321;
+}
+
+.notification-warning {
+    border-left-color: #F5A623;
+}
+
+.notification-error {
+    border-left-color: #D0021B;
+}
+
+/* Notification Content */
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 12px;
+}
+
+.notification-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.notification-close:hover {
+    background-color: #f0f0f0;
+    color: #666;
+}
+
+/* Notification Progress Bar */
+.notification-progress {
+    height: 3px;
+    background-color: #f0f0f0;
+    overflow: hidden;
+}
+
+.notification-progress-bar {
+    height: 100%;
+    background-color: currentColor;
+    width: 100%;
+    transform: translateX(-100%);
+    animation: notification-progress linear forwards;
+}
+
+.notification-info .notification-progress-bar {
+    background-color: #4A90E2;
+}
+
+.notification-success .notification-progress-bar {
+    background-color: #7ED321;
+}
+
+.notification-warning .notification-progress-bar {
+    background-color: #F5A623;
+}
+
+.notification-error .notification-progress-bar {
+    background-color: #D0021B;
+}
+
+@keyframes notification-progress {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    opacity: 0;
+    animation: modal-fade-in 0.3s ease-out forwards;
+}
+
+.modal-overlay.modal-exit {
+    animation: modal-fade-out 0.3s ease-out forwards;
+}
+
+@keyframes modal-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modal-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Modal Dialog */
+.modal-dialog {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: hidden;
+    transform: scale(0.9) translateY(-20px);
+    animation: modal-slide-in 0.3s ease-out forwards;
+}
+
+.modal-overlay.modal-exit .modal-dialog {
+    animation: modal-slide-out 0.3s ease-out forwards;
+}
+
+@keyframes modal-slide-in {
+    from {
+        transform: scale(0.9) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes modal-slide-out {
+    from {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.9) translateY(-20px);
+        opacity: 0;
+    }
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 20px 24px;
+}
+
+.modal-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+    margin: 0;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 24px 24px;
+    background-color: #f8f9fa;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 80px;
+}
+
+.modal-btn.primary {
+    background-color: #4A90E2;
+    color: white;
+}
+
+.modal-btn.primary:hover {
+    background-color: #357abd;
+}
+
+.modal-btn.secondary {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.modal-btn.secondary:hover {
+    background-color: #dee2e6;
+}
+
+.modal-btn.danger {
+    background-color: #D0021B;
+    color: white;
+}
+
+.modal-btn.danger:hover {
+    background-color: #b8001a;
+}
+
+/* Confirmation Dialog Specific Styles */
+.confirmation-dialog .modal-header {
+    background-color: #fff3cd;
+    border-bottom-color: #ffeaa7;
+}
+
+.confirmation-dialog.error-dialog .modal-header {
+    background-color: #f8d7da;
+    border-bottom-color: #f5c6cb;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+}
+
+.loading-overlay {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.loading-inline {
+    position: relative;
+    background-color: transparent;
+    min-height: 200px;
+}
+
+.loading-content {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid #4A90E2;
+    border-radius: 50%;
+    animation: loading-spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes loading-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-message {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.loading-cancel {
+    background-color: #e9ecef;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #495057;
+    transition: background-color 0.2s;
+}
+
+.loading-cancel:hover {
+    background-color: #dee2e6;
+}
+
+.loading-indicator.loading-exit {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+/* Error Boundary */
+.error-boundary {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    z-index: 10003;
+    border: 2px solid #D0021B;
+}
+
+.error-boundary .error-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.error-boundary h3 {
+    color: #D0021B;
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.error-boundary p {
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.error-retry,
+.error-report {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.error-retry {
+    background-color: #4A90E2;
+    color: white;
+}
+
+.error-retry:hover {
+    background-color: #357abd;
+}
+
+.error-report {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.error-report:hover {
+    background-color: #dee2e6;
+}
+
+/* Progress Indicators */
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #4A90E2;
+}
+
+.progress-indicator .progress-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e9ecef;
+    border-top: 2px solid #4A90E2;
+    border-radius: 50%;
+    animation: loading-spin 1s linear infinite;
+}
+
+.progress-indicator .progress-text {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .modal-dialog {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+    
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
+    
+    .loading-content {
+        margin: 20px;
+        max-width: none;
+    }
+    
+    .error-boundary {
+        margin: 20px;
+        width: calc(100% - 40px);
+        padding: 30px 20px;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+    
+    .error-retry,
+    .error-report {
+        width: 100%;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .notification {
+        border: 2px solid;
+    }
+    
+    .modal-dialog {
+        border: 2px solid #333;
+    }
+    
+    .loading-content {
+        border: 2px solid #333;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .notification,
+    .modal-overlay,
+    .modal-dialog,
+    .loading-indicator {
+        animation: none;
+        transition: none;
+    }
+    
+    .loading-spinner {
+        animation: none;
+        border-top-color: transparent;
+    }
+    
+    .notification-progress-bar {
+        animation: none;
+        transform: translateX(0);
+    }
+}
+
+/* Focus Management */
+.modal-btn:focus,
+.notification-close:focus,
+.loading-cancel:focus,
+.error-retry:focus,
+.error-report:focus {
+    outline: 2px solid #4A90E2;
+    outline-offset: 2px;
+}
+
+/* Screen Reader Support */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Government Quiz Tool - Tests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .status.running {
+            color: #F5A623;
+        }
+        .status.success {
+            color: #7ED321;
+        }
+        .status.error {
+            color: #D0021B;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 AP Government Quiz Tool - Test Suite</h1>
+        
+        <div class="test-controls">
+            <button id="runTests" onclick="runTests()">Run All Tests</button>
+            <button id="clearOutput" onclick="clearOutput()">Clear Output</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div id="output"></div>
+    </div>
+
+    <!-- Load the source files -->
+    <script src="js/question.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/sample-questions.js"></script>
+    <script src="js/test-runner.js"></script>
+    <script src="js/tests.js"></script>
+
+    <script>
+        // Capture console output and display in the page
+        const outputDiv = document.getElementById('output');
+        const statusDiv = document.getElementById('status');
+        const runButton = document.getElementById('runTests');
+        
+        // Override console.log to capture output
+        const originalConsoleLog = console.log;
+        const originalConsoleWarn = console.warn;
+        
+        function captureOutput(message) {
+            outputDiv.textContent += message + '\n';
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            captureOutput(args.join(' '));
+        };
+        
+        console.warn = function(...args) {
+            originalConsoleWarn.apply(console, args);
+            captureOutput('⚠️ ' + args.join(' '));
+        };
+        
+        async function runTests() {
+            try {
+                runButton.disabled = true;
+                statusDiv.textContent = '🔄 Running tests...';
+                statusDiv.className = 'status running';
+                
+                clearOutput();
+                
+                const results = await runAllTests();
+                
+                if (results.failed === 0) {
+                    statusDiv.textContent = `✅ All ${results.total} tests passed!`;
+                    statusDiv.className = 'status success';
+                } else {
+                    statusDiv.textContent = `❌ ${results.failed} of ${results.total} tests failed`;
+                    statusDiv.className = 'status error';
+                }
+                
+            } catch (error) {
+                statusDiv.textContent = `💥 Test execution failed: ${error.message}`;
+                statusDiv.className = 'status error';
+                captureOutput(`Error: ${error.message}`);
+            } finally {
+                runButton.disabled = false;
+            }
+        }
+        
+        function clearOutput() {
+            outputDiv.textContent = '';
+            statusDiv.textContent = '';
+            statusDiv.className = 'status';
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 500);
+        });
+    </script>
+</body>
+</html>

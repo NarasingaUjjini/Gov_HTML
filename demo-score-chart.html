@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Chart Demo - AP Government Study Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .demo-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .demo-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .demo-btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .demo-btn:hover {
+            background: #357abd;
+        }
+        .chart-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>Score Chart Interactive Demo</h1>
+        <p>This demonstrates the practice test score progression chart functionality.</p>
+        
+        <div class="demo-controls">
+            <button class="demo-btn" onclick="loadSampleData()">Load Sample Data</button>
+            <button class="demo-btn" onclick="addRandomTest()">Add Random Test</button>
+            <button class="demo-btn" onclick="clearData()">Clear Data</button>
+            <button class="demo-btn" onclick="showEmptyState()">Show Empty State</button>
+        </div>
+        
+        <div class="chart-container">
+            <h3>Practice Test Score Progression</h3>
+            <div id="test-count">0 tests taken</div>
+            <div id="score-chart" class="score-chart">
+                <canvas id="score-canvas" width="600" height="300"></canvas>
+                <div id="no-data-message" class="no-data-message" style="display: flex;">
+                    <div class="no-data-icon">📊</div>
+                    <div class="no-data-text">Take your first practice test to see score progression</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="chart-info" style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 4px;">
+            <strong>Features demonstrated:</strong>
+            <ul>
+                <li>Canvas-based line chart rendering</li>
+                <li>Interactive hover tooltips with test details</li>
+                <li>Responsive design that adapts to container size</li>
+                <li>Empty state handling with user-friendly message</li>
+                <li>Data processing for practice test score tracking</li>
+                <li>Smooth animations and visual feedback</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/score-chart.js"></script>
+    
+    <script>
+        let scoreChart;
+        let testData = [];
+        
+        // Initialize the chart
+        document.addEventListener('DOMContentLoaded', () => {
+            scoreChart = new ScoreChart('score-canvas');
+            updateTestCount();
+        });
+        
+        function loadSampleData() {
+            testData = [
+                {
+                    date: '2024-01-15T10:30:00Z',
+                    score: 42,
+                    total: 55,
+                    percentage: 76,
+                    unitBreakdown: { 1: 8, 2: 9, 3: 7, 4: 9, 5: 9 }
+                },
+                {
+                    date: '2024-01-18T14:15:00Z',
+                    score: 45,
+                    total: 55,
+                    percentage: 82,
+                    unitBreakdown: { 1: 9, 2: 10, 3: 8, 4: 9, 5: 9 }
+                },
+                {
+                    date: '2024-01-22T09:45:00Z',
+                    score: 48,
+                    total: 55,
+                    percentage: 87,
+                    unitBreakdown: { 1: 10, 2: 10, 3: 9, 4: 9, 5: 10 }
+                },
+                {
+                    date: '2024-01-25T16:20:00Z',
+                    score: 51,
+                    total: 55,
+                    percentage: 93,
+                    unitBreakdown: { 1: 11, 2: 10, 3: 10, 4: 10, 5: 10 }
+                }
+            ];
+            
+            updateChart();
+        }
+        
+        function addRandomTest() {
+            const score = Math.floor(Math.random() * 20) + 35; // 35-55
+            const percentage = Math.round((score / 55) * 100);
+            const date = new Date();
+            date.setDate(date.getDate() - Math.floor(Math.random() * 30)); // Random date in last 30 days
+            
+            const newTest = {
+                date: date.toISOString(),
+                score: score,
+                total: 55,
+                percentage: percentage,
+                unitBreakdown: {
+                    1: Math.floor(Math.random() * 12) + 8,
+                    2: Math.floor(Math.random() * 12) + 8,
+                    3: Math.floor(Math.random() * 12) + 8,
+                    4: Math.floor(Math.random() * 12) + 8,
+                    5: Math.floor(Math.random() * 12) + 8
+                }
+            };
+            
+            testData.push(newTest);
+            updateChart();
+        }
+        
+        function clearData() {
+            testData = [];
+            updateChart();
+        }
+        
+        function showEmptyState() {
+            clearData();
+        }
+        
+        function updateChart() {
+            const noDataMessage = document.getElementById('no-data-message');
+            const canvas = document.getElementById('score-canvas');
+            
+            if (testData.length === 0) {
+                noDataMessage.style.display = 'flex';
+                canvas.style.display = 'none';
+            } else {
+                noDataMessage.style.display = 'none';
+                canvas.style.display = 'block';
+                scoreChart.updateData(testData);
+            }
+            
+            updateTestCount();
+        }
+        
+        function updateTestCount() {
+            const testCountElement = document.getElementById('test-count');
+            const count = testData.length;
+            testCountElement.textContent = count === 0 ? '0 tests taken' : 
+                count === 1 ? '1 test taken' : `${count} tests taken`;
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (scoreChart && testData.length > 0) {
+                setTimeout(() => scoreChart.render(), 100);
+            }
+        });
+    </script>
+</body>
+</html>

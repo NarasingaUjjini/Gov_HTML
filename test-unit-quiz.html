@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Quiz Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .test-passed {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-summary {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .all-passed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .some-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Unit Quiz Functionality Tests</h1>
+    
+    <div class="test-container">
+        <h2>Test Controls</h2>
+        <button onclick="runUnitQuizTests()">Run Unit Quiz Tests</button>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="test-results" class="test-container">
+        <h2>Test Results</h2>
+        <p>Click "Run Unit Quiz Tests" to start testing...</p>
+    </div>
+
+    <!-- Load all required scripts -->
+    <script src="js/question.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/quiz-engine.js"></script>
+    <script src="js/sample-questions.js"></script>
+    <script src="js/test-runner.js"></script>
+    <script src="js/tests.js"></script>
+    <script src="js/unit-quiz.test.js"></script>
+
+    <script>
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = '<h2>Test Results</h2><p>Click "Run Unit Quiz Tests" to start testing...</p>';
+        }
+
+        function displayTestResult(name, passed, message) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${passed ? 'test-passed' : 'test-failed'}`;
+            resultDiv.innerHTML = `<strong>${passed ? '✅' : '❌'} ${name}</strong><br>${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function runUnitQuizTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<h2>Test Results</h2><p>Running unit quiz tests...</p>';
+            
+            try {
+                // Test data
+                const testQuestions = [
+                    {
+                        id: "test_unit1_q1",
+                        unit: 1,
+                        question: "Test question for Unit 1?",
+                        options: ["Option A", "Option B", "Option C", "Option D"],
+                        correct: 0,
+                        explanation: "Test explanation"
+                    },
+                    {
+                        id: "test_unit1_q2",
+                        unit: 1,
+                        question: "Another test question for Unit 1?",
+                        options: ["Option A", "Option B", "Option C", "Option D"],
+                        correct: 1,
+                        explanation: "Test explanation"
+                    },
+                    {
+                        id: "test_unit2_q1",
+                        unit: 2,
+                        question: "Test question for Unit 2?",
+                        options: ["Option A", "Option B", "Option C", "Option D"],
+                        correct: 2,
+                        explanation: "Test explanation"
+                    }
+                ];
+                
+                let passed = 0;
+                let failed = 0;
+                
+                // Test 1: Unit question selection accuracy
+                try {
+                    const questionManager = new QuestionManager();
+                    questionManager.loadQuestions(testQuestions);
+                    
+                    // Test getting questions for unit 1
+                    const unit1Questions = questionManager.getQuestionsByUnit(1);
+                    if (unit1Questions.length !== 2) {
+                        throw new Error(`Expected 2 questions for unit 1, got ${unit1Questions.length}`);
+                    }
+                    
+                    // Verify all questions belong to unit 1
+                    unit1Questions.forEach(question => {
+                        if (question.unit !== 1) {
+                            throw new Error(`Expected unit 1, got unit ${question.unit}`);
+                        }
+                    });
+                    
+                    // Test random question selection for specific unit
+                    const randomUnit1 = questionManager.getRandomQuestions(1, [1]);
+                    if (randomUnit1.length !== 1) {
+                        throw new Error(`Expected 1 random question, got ${randomUnit1.length}`);
+                    }
+                    if (randomUnit1[0].unit !== 1) {
+                        throw new Error(`Expected unit 1, got unit ${randomUnit1[0].unit}`);
+                    }
+                    
+                    displayTestResult('Unit Question Selection Accuracy', true, 'Unit question filtering works correctly');
+                    passed++;
+                } catch (error) {
+                    displayTestResult('Unit Question Selection Accuracy', false, error.message);
+                    failed++;
+                }
+                
+                // Test 2: Unit quiz creation
+                try {
+                    const questionManager = new QuestionManager();
+                    const progressTracker = new ProgressTracker(new StorageWrapper());
+                    const quizEngine = new QuizEngine(questionManager, progressTracker);
+                    
+                    questionManager.loadQuestions(testQuestions);
+                    
+                    // Start unit 1 quiz
+                    quizEngine.startQuiz('unit', 1);
+                    
+                    if (!quizEngine.isActive) {
+                        throw new Error('Quiz should be active after starting');
+                    }
+                    if (quizEngine.mode !== 'unit') {
+                        throw new Error(`Expected mode 'unit', got '${quizEngine.mode}'`);
+                    }
+                    if (quizEngine.unitId !== 1) {
+                        throw new Error(`Expected unit ID 1, got ${quizEngine.unitId}`);
+                    }
+                    
+                    // Verify all questions are from unit 1
+                    quizEngine.questions.forEach(question => {
+                        if (question.unit !== 1) {
+                            throw new Error(`Expected unit 1, got unit ${question.unit}`);
+                        }
+                    });
+                    
+                    quizEngine.endQuiz();
+                    displayTestResult('Unit Quiz Creation', true, 'Unit quiz creation and configuration works correctly');
+                    passed++;
+                } catch (error) {
+                    displayTestResult('Unit Quiz Creation', false, error.message);
+                    failed++;
+                }
+                
+                // Test 3: Unit quiz scoring
+                try {
+                    const questionManager = new QuestionManager();
+                    const progressTracker = new ProgressTracker(new StorageWrapper());
+                    const quizEngine = new QuizEngine(questionManager, progressTracker);
+                    
+                    questionManager.loadQuestions(testQuestions);
+                    
+                    // Start unit 1 quiz
+                    quizEngine.startQuiz('unit', 1);
+                    
+                    // Submit correct answer for first question
+                    quizEngine.submitAnswer(0); // Correct
+                    quizEngine.nextQuestion();
+                    
+                    // Submit incorrect answer for second question
+                    quizEngine.submitAnswer(0); // Incorrect (correct is 1)
+                    
+                    // Calculate score
+                    const score = quizEngine.calculateScore();
+                    if (score.correct !== 1) {
+                        throw new Error(`Expected 1 correct, got ${score.correct}`);
+                    }
+                    if (score.total !== 2) {
+                        throw new Error(`Expected 2 total, got ${score.total}`);
+                    }
+                    if (score.percentage !== 50) {
+                        throw new Error(`Expected 50%, got ${score.percentage}%`);
+                    }
+                    
+                    // End quiz and check results
+                    const results = quizEngine.endQuiz();
+                    if (results.mode !== 'unit') {
+                        throw new Error(`Expected mode 'unit', got '${results.mode}'`);
+                    }
+                    if (results.unitId !== 1) {
+                        throw new Error(`Expected unit ID 1, got ${results.unitId}`);
+                    }
+                    
+                    displayTestResult('Unit Quiz Scoring', true, 'Unit quiz scoring and results work correctly');
+                    passed++;
+                } catch (error) {
+                    displayTestResult('Unit Quiz Scoring', false, error.message);
+                    failed++;
+                }
+                
+                // Test 4: Unit progress tracking
+                try {
+                    const storageWrapper = new StorageWrapper();
+                    const progressTracker = new ProgressTracker(storageWrapper);
+                    
+                    // Clear any existing progress
+                    storageWrapper.clear();
+                    
+                    // Update progress for unit 1
+                    progressTracker.updateUnitProgress(1, 3, 5);
+                    
+                    const unitProgress = progressTracker.getUnitProgress(1);
+                    if (unitProgress.correct !== 3) {
+                        throw new Error(`Expected 3 correct, got ${unitProgress.correct}`);
+                    }
+                    if (unitProgress.total !== 5) {
+                        throw new Error(`Expected 5 total, got ${unitProgress.total}`);
+                    }
+                    if (unitProgress.aptitude !== 60) {
+                        throw new Error(`Expected 60% aptitude, got ${unitProgress.aptitude}%`);
+                    }
+                    
+                    displayTestResult('Unit Progress Tracking', true, 'Unit progress tracking works correctly');
+                    passed++;
+                } catch (error) {
+                    displayTestResult('Unit Progress Tracking', false, error.message);
+                    failed++;
+                }
+                
+                // Test 5: Sample questions integration
+                try {
+                    const questionManager = new QuestionManager();
+                    
+                    if (typeof sampleQuestions !== 'undefined') {
+                        questionManager.loadQuestions(sampleQuestions);
+                        
+                        // Test that all units have questions
+                        for (let unit = 1; unit <= 5; unit++) {
+                            const unitQuestions = questionManager.getQuestionsByUnit(unit);
+                            if (unitQuestions.length === 0) {
+                                throw new Error(`Unit ${unit} should have questions`);
+                            }
+                            
+                            // Verify all questions belong to the correct unit
+                            unitQuestions.forEach(question => {
+                                if (question.unit !== unit) {
+                                    throw new Error(`Unit ${unit} contains question from unit ${question.unit}`);
+                                }
+                            });
+                        }
+                        
+                        displayTestResult('Sample Questions Integration', true, 'Sample questions integration works correctly');
+                        passed++;
+                    } else {
+                        displayTestResult('Sample Questions Integration', false, 'Sample questions not available');
+                        failed++;
+                    }
+                } catch (error) {
+                    displayTestResult('Sample Questions Integration', false, error.message);
+                    failed++;
+                }
+                
+                // Summary
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = `test-summary ${failed === 0 ? 'all-passed' : 'some-failed'}`;
+                summaryDiv.innerHTML = `
+                    <strong>Test Summary:</strong><br>
+                    Passed: ${passed}<br>
+                    Failed: ${failed}<br>
+                    Total: ${passed + failed}<br>
+                    ${failed === 0 ? '🎉 All unit quiz tests passed!' : `❌ ${failed} test(s) failed`}
+                `;
+                resultsDiv.appendChild(summaryDiv);
+                
+            } catch (error) {
+                displayTestResult('Test Execution', false, `Error running tests: ${error.message}`);
+            }
+        }
+
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<h2>Test Results</h2><p>Running all tests...</p>';
+            
+            try {
+                if (typeof runAllTests !== 'undefined') {
+                    const results = await window.runAllTests();
+                    
+                    const summaryDiv = document.createElement('div');
+                    summaryDiv.className = `test-summary ${results.failed === 0 ? 'all-passed' : 'some-failed'}`;
+                    summaryDiv.innerHTML = `
+                        <strong>All Tests Summary:</strong><br>
+                        Passed: ${results.passed}<br>
+                        Failed: ${results.failed}<br>
+                        Total: ${results.total}<br>
+                        ${results.failed === 0 ? '🎉 All tests passed!' : `❌ ${results.failed} test(s) failed`}
+                    `;
+                    resultsDiv.appendChild(summaryDiv);
+                } else {
+                    displayTestResult('All Tests', false, 'runAllTests function not available');
+                }
+            } catch (error) {
+                displayTestResult('All Tests', false, `Error running all tests: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

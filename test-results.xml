@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="AP Government Quiz Tool Comprehensive Tests" 
+           tests="NaN" 
+           failures="7" 
+           time="0.139">
+    <testcase classname="ComprehensiveTestSuite" name="AllTests" time="0.139">
+        <failure message="7 tests failed"></failure>
+    </testcase>
+</testsuite>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .mode-btn { 
+            display: block; 
+            margin: 10px 0; 
+            padding: 15px; 
+            background: #4A90E2; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .mode-btn:hover { background: #357ABD; }
+        #log { 
+            margin-top: 20px; 
+            padding: 10px; 
+            background: #f5f5f5; 
+            border-radius: 5px;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Debug Test</h1>
+    
+    <button id="unit-quiz-btn" class="mode-btn">Unit Quiz</button>
+    <button id="practice-test-btn" class="mode-btn">Practice Test</button>
+    <button id="study-mode-btn" class="mode-btn">Study Mode</button>
+    
+    <div id="log">
+        <h3>Debug Log:</h3>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            log('DOM loaded, setting up event listeners...');
+            
+            const unitBtn = document.getElementById('unit-quiz-btn');
+            const practiceBtn = document.getElementById('practice-test-btn');
+            const studyBtn = document.getElementById('study-mode-btn');
+            
+            if (unitBtn) {
+                unitBtn.addEventListener('click', () => {
+                    log('Unit Quiz button clicked!');
+                    alert('Unit Quiz clicked!');
+                });
+                log('Unit Quiz button listener added');
+            } else {
+                log('ERROR: Unit Quiz button not found');
+            }
+            
+            if (practiceBtn) {
+                practiceBtn.addEventListener('click', () => {
+                    log('Practice Test button clicked!');
+                    alert('Practice Test clicked!');
+                });
+                log('Practice Test button listener added');
+            } else {
+                log('ERROR: Practice Test button not found');
+            }
+            
+            if (studyBtn) {
+                studyBtn.addEventListener('click', () => {
+                    log('Study Mode button clicked!');
+                    alert('Study Mode clicked!');
+                });
+                log('Study Mode button listener added');
+            } else {
+                log('ERROR: Study Mode button not found');
+            }
+            
+            log('All event listeners set up successfully');
+        });
+    </script>
+</body>
+</html>

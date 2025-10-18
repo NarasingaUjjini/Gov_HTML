@@ -1,0 +1,46 @@
+{
+  "name": "ap-government-quiz-tool",
+  "version": "1.0.0",
+  "description": "Comprehensive AP United States Government studying tool with multiple quiz modes",
+  "main": "js/app.js",
+  "scripts": {
+    "start": "python server.py",
+    "serve": "python server.py",
+    "dev": "python server.py",
+    "test": "node run-comprehensive-tests.js",
+    "test:verbose": "node run-comprehensive-tests.js --verbose",
+    "test:coverage": "node run-comprehensive-tests.js --coverage",
+    "test:unit": "node run-tests.js",
+    "test:browser": "echo 'Open test-comprehensive-suite.html in your browser to run tests'"
+  },
+  "keywords": [
+    "ap-government",
+    "quiz",
+    "education",
+    "study-tool",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "AP Government Quiz Tool Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ap-government-quiz-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/ap-government-quiz-tool/issues"
+  },
+  "homepage": "https://github.com/your-org/ap-government-quiz-tool#readme",
+  "browserslist": [
+    "Chrome >= 90",
+    "Firefox >= 88",
+    "Safari >= 14",
+    "Edge >= 90"
+  ]
+}

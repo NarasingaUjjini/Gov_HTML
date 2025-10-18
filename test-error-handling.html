@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling Test - AP Government Study Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #4A90E2;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .test-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .test-btn.primary {
+            background-color: #4A90E2;
+            color: white;
+        }
+        
+        .test-btn.warning {
+            background-color: #F5A623;
+            color: white;
+        }
+        
+        .test-btn.danger {
+            background-color: #D0021B;
+            color: white;
+        }
+        
+        .test-btn.success {
+            background-color: #7ED321;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #4A90E2;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Error Handling Test Suite</h1>
+        <nav class="main-nav">
+            <button onclick="window.location.href='index.html'" class="nav-btn">Back to App</button>
+        </nav>
+    </header>
+
+    <main class="app-main">
+        <div class="test-container">
+            <h2>Error Handling and User Feedback Tests</h2>
+            <p>This page tests the comprehensive error handling system implemented for the AP Government Study Tool.</p>
+
+            <!-- Notification Tests -->
+            <div class="test-section">
+                <h3>Notification System Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn primary" onclick="testInfoNotification()">Info Notification</button>
+                    <button class="test-btn success" onclick="testSuccessNotification()">Success Notification</button>
+                    <button class="test-btn warning" onclick="testWarningNotification()">Warning Notification</button>
+                    <button class="test-btn danger" onclick="testErrorNotification()">Error Notification</button>
+                    <button class="test-btn" onclick="testPersistentNotification()">Persistent Notification</button>
+                    <button class="test-btn" onclick="testMultipleNotifications()">Multiple Notifications</button>
+                </div>
+            </div>
+
+            <!-- Confirmation Dialog Tests -->
+            <div class="test-section">
+                <h3>Confirmation Dialog Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn primary" onclick="testBasicConfirmation()">Basic Confirmation</button>
+                    <button class="test-btn warning" onclick="testDestructiveConfirmation()">Destructive Action</button>
+                    <button class="test-btn" onclick="testInfoDialog()">Info Dialog</button>
+                    <button class="test-btn danger" onclick="testEndQuizConfirmation()">End Quiz Confirmation</button>
+                </div>
+            </div>
+
+            <!-- Loading Indicator Tests -->
+            <div class="test-section">
+                <h3>Loading Indicator Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn primary" onclick="testBasicLoading()">Basic Loading</button>
+                    <button class="test-btn" onclick="testLoadingWithProgress()">Loading with Progress</button>
+                    <button class="test-btn" onclick="testCancellableLoading()">Cancellable Loading</button>
+                    <button class="test-btn" onclick="testLongOperation()">Simulate Long Operation</button>
+                </div>
+            </div>
+
+            <!-- Storage Error Tests -->
+            <div class="test-section">
+                <h3>Storage Error Handling Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn warning" onclick="testStorageQuotaError()">Storage Quota Error</button>
+                    <button class="test-btn danger" onclick="testStorageUnavailable()">Storage Unavailable</button>
+                    <button class="test-btn" onclick="testStorageFallback()">Test Fallback Mechanism</button>
+                    <button class="test-btn" onclick="testStorageRecovery()">Test Recovery</button>
+                </div>
+            </div>
+
+            <!-- Error Boundary Tests -->
+            <div class="test-section">
+                <h3>Error Boundary Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn danger" onclick="testComponentError()">Simulate Component Error</button>
+                    <button class="test-btn danger" onclick="testJavaScriptError()">Trigger JavaScript Error</button>
+                    <button class="test-btn danger" onclick="testPromiseRejection()">Unhandled Promise Rejection</button>
+                </div>
+            </div>
+
+            <!-- Advanced Confirmation Tests -->
+            <div class="test-section">
+                <h3>Advanced Confirmation Dialog Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn warning" onclick="testNavigationConfirmation()">Navigation Warning</button>
+                    <button class="test-btn danger" onclick="testClearProgressConfirmation()">Clear Progress</button>
+                    <button class="test-btn warning" onclick="testAutoSubmitWarning()">Auto-Submit Warning</button>
+                    <button class="test-btn" onclick="testIncompleteSubmission()">Incomplete Submission</button>
+                </div>
+            </div>
+
+            <!-- Recovery and Resilience Tests -->
+            <div class="test-section">
+                <h3>Error Recovery and Resilience Tests</h3>
+                <div class="test-buttons">
+                    <button class="test-btn warning" onclick="testProgressRecovery()">Progress Recovery</button>
+                    <button class="test-btn warning" onclick="testTimerErrorHandling()">Timer Error Handling</button>
+                    <button class="test-btn primary" onclick="testErrorStatistics()">Error Statistics</button>
+                    <button class="test-btn warning" onclick="testErrorRecovery()">Error Recovery Scenarios</button>
+                </div>
+            </div>
+
+            <!-- Status Display -->
+            <div class="status" id="test-status">
+                Ready to run tests. Click any button above to test error handling features.
+            </div>
+        </div>
+    </main>
+
+    <!-- Load error handling system -->
+    <script src="js/error-handler.js"></script>
+    <script src="js/confirmation-dialogs.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/progress-tracker.js"></script>
+
+    <script>
+        // Initialize error handling system
+        let errorHandler;
+        let confirmationDialogs;
+        let storageWrapper;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                errorHandler = new ErrorHandler();
+                confirmationDialogs = new ConfirmationDialogs(errorHandler);
+                storageWrapper = new StorageWrapper(errorHandler);
+                updateStatus('Error handling system initialized successfully', 'success');
+            } catch (error) {
+                updateStatus('Failed to initialize error handling system: ' + error.message, 'error');
+            }
+        });
+
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('test-status');
+            status.textContent = message;
+            status.className = 'status';
+            if (type !== 'info') {
+                status.classList.add(type);
+            }
+        }
+
+        // Notification Tests
+        function testInfoNotification() {
+            errorHandler.showNotification('This is an informational message', 'info');
+            updateStatus('Info notification displayed');
+        }
+
+        function testSuccessNotification() {
+            errorHandler.showNotification('Operation completed successfully!', 'success');
+            updateStatus('Success notification displayed');
+        }
+
+        function testWarningNotification() {
+            errorHandler.showNotification('This is a warning message that requires attention', 'warning');
+            updateStatus('Warning notification displayed');
+        }
+
+        function testErrorNotification() {
+            errorHandler.showNotification('An error occurred during the operation', 'error');
+            updateStatus('Error notification displayed');
+        }
+
+        function testPersistentNotification() {
+            errorHandler.showNotification('This notification will stay until manually closed', 'info', 0);
+            updateStatus('Persistent notification displayed');
+        }
+
+        function testMultipleNotifications() {
+            errorHandler.showNotification('First notification', 'info', 3000);
+            setTimeout(() => errorHandler.showNotification('Second notification', 'success', 3000), 500);
+            setTimeout(() => errorHandler.showNotification('Third notification', 'warning', 3000), 1000);
+            updateStatus('Multiple notifications displayed');
+        }
+
+        // Confirmation Dialog Tests
+        async function testBasicConfirmation() {
+            const result = await errorHandler.showConfirmDialog('Do you want to proceed with this action?');
+            updateStatus(`Basic confirmation result: ${result ? 'Confirmed' : 'Cancelled'}`);
+        }
+
+        async function testDestructiveConfirmation() {
+            const result = await errorHandler.showConfirmDialog(
+                'This action will permanently delete all your data. This cannot be undone.',
+                {
+                    title: 'Delete All Data',
+                    confirmText: 'Delete Everything',
+                    cancelText: 'Keep Data',
+                    type: 'error',
+                    destructive: true
+                }
+            );
+            updateStatus(`Destructive confirmation result: ${result ? 'Confirmed' : 'Cancelled'}`);
+        }
+
+        async function testInfoDialog() {
+            await confirmationDialogs.showInfo(
+                'This is an informational dialog that provides important details about the application.',
+                { title: 'Information' }
+            );
+            updateStatus('Info dialog was acknowledged');
+        }
+
+        async function testEndQuizConfirmation() {
+            const mockQuizState = {
+                mode: 'practice',
+                currentQuestion: 25,
+                totalQuestions: 55,
+                answeredCount: 20,
+                timeRemaining: '45:30'
+            };
+            
+            const result = await confirmationDialogs.confirmEndQuiz(mockQuizState);
+            updateStatus(`End quiz confirmation result: ${result ? 'End Quiz' : 'Continue Quiz'}`);
+        }
+
+        // Loading Indicator Tests
+        function testBasicLoading() {
+            const loading = errorHandler.showLoading('Processing your request...');
+            setTimeout(() => {
+                loading.remove();
+                updateStatus('Basic loading test completed');
+            }, 3000);
+        }
+
+        function testLoadingWithProgress() {
+            const loading = errorHandler.showLoading('Initializing application components...');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 20;
+                loading.update(`Loading... ${progress}%`);
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    loading.remove();
+                    updateStatus('Loading with progress test completed');
+                }
+            }, 500);
+        }
+
+        function testCancellableLoading() {
+            const loading = errorHandler.showLoading('Long running operation...', {
+                cancellable: true
+            });
+            setTimeout(() => {
+                loading.remove();
+                updateStatus('Cancellable loading test completed');
+            }, 5000);
+        }
+
+        function testLongOperation() {
+            const loading = errorHandler.showLoading('Simulating long operation...');
+            
+            // Simulate a long operation with progress updates
+            let step = 0;
+            const steps = ['Initializing...', 'Loading data...', 'Processing...', 'Finalizing...'];
+            
+            const interval = setInterval(() => {
+                if (step < steps.length) {
+                    loading.update(steps[step]);
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    loading.remove();
+                    errorHandler.showNotification('Long operation completed successfully!', 'success');
+                    updateStatus('Long operation simulation completed');
+                }
+            }, 1500);
+        }
+
+        // Storage Error Tests
+        function testStorageQuotaError() {
+            const quotaError = new Error('Storage quota exceeded');
+            quotaError.name = 'QuotaExceededError';
+            errorHandler.handleStorageError(quotaError, 'quota test');
+            updateStatus('Storage quota error simulation completed');
+        }
+
+        function testStorageUnavailable() {
+            const storageError = new Error('localStorage is not available');
+            errorHandler.handleStorageError(storageError, 'availability test');
+            updateStatus('Storage unavailable error simulation completed');
+        }
+
+        function testStorageFallback() {
+            // Test the storage wrapper's fallback mechanism
+            const testData = { test: true, timestamp: Date.now() };
+            const success = storageWrapper.setItem('test-fallback', testData);
+            const retrieved = storageWrapper.getItem('test-fallback');
+            
+            if (success && retrieved) {
+                updateStatus('Storage fallback mechanism working correctly', 'success');
+            } else {
+                updateStatus('Storage fallback mechanism failed', 'error');
+            }
+        }
+
+        function testStorageRecovery() {
+            // Test storage recovery after error
+            try {
+                const storageInfo = storageWrapper.getStorageInfo();
+                updateStatus(`Storage info: ${JSON.stringify(storageInfo)}`, 'success');
+            } catch (error) {
+                errorHandler.handleStorageError(error, 'recovery test');
+                updateStatus('Storage recovery test completed with error handling');
+            }
+        }
+
+        // Error Boundary Tests
+        function testComponentError() {
+            const componentError = new Error('Component failed to render');
+            componentError.stack = 'Error: Component failed to render\n    at TestComponent.render';
+            errorHandler.showErrorBoundary(componentError, 'TestComponent');
+            updateStatus('Component error boundary displayed');
+        }
+
+        function testJavaScriptError() {
+            // This will trigger the global error handler
+            setTimeout(() => {
+                throw new Error('Intentional JavaScript error for testing');
+            }, 100);
+            updateStatus('JavaScript error triggered (check console and notifications)');
+        }
+
+        function testPromiseRejection() {
+            // This will trigger the unhandled promise rejection handler
+            Promise.reject(new Error('Intentional promise rejection for testing'));
+            updateStatus('Promise rejection triggered (check console and notifications)');
+        }
+
+        // Additional comprehensive tests
+        function testNavigationConfirmation() {
+            const mockQuizState = {
+                mode: 'unit',
+                currentQuestion: 15,
+                totalQuestions: 25,
+                answeredCount: 12,
+                timeRemaining: null
+            };
+            
+            confirmationDialogs.confirmNavigation(mockQuizState).then(result => {
+                updateStatus(`Navigation confirmation result: ${result ? 'Leave' : 'Stay'}`);
+            });
+        }
+
+        function testClearProgressConfirmation() {
+            confirmationDialogs.confirmClearProgress().then(result => {
+                updateStatus(`Clear progress confirmation result: ${result ? 'Cleared' : 'Kept'}`);
+            });
+        }
+
+        function testAutoSubmitWarning() {
+            confirmationDialogs.confirmAutoSubmitWarning('2:30').then(result => {
+                updateStatus(`Auto-submit warning result: ${result ? 'Submit Now' : 'Continue'}`);
+            });
+        }
+
+        function testIncompleteSubmission() {
+            confirmationDialogs.confirmSubmitIncomplete(8, 'practice').then(result => {
+                updateStatus(`Incomplete submission result: ${result ? 'Submit' : 'Review'}`);
+            });
+        }
+
+        function testProgressRecovery() {
+            // Test progress tracker error recovery
+            try {
+                // Simulate corrupted progress data
+                const corruptedData = { invalid: 'data', units: 'not an object' };
+                storageWrapper.setItem('ap-gov-progress', corruptedData);
+                
+                // Try to create a new progress tracker - should trigger recovery
+                const progressTracker = new ProgressTracker(storageWrapper);
+                const stats = progressTracker.getProgressStats();
+                
+                updateStatus(`Progress recovery test: ${stats.error ? 'Failed' : 'Success'}`, 
+                           stats.error ? 'error' : 'success');
+            } catch (error) {
+                updateStatus(`Progress recovery test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testTimerErrorHandling() {
+            try {
+                // Test timer with invalid parameters
+                const timer = new Timer();
+                timer.start(-5); // Should trigger error
+                updateStatus('Timer error handling test completed');
+            } catch (error) {
+                updateStatus(`Timer error properly caught: ${error.message}`, 'success');
+            }
+        }
+
+        function testErrorStatistics() {
+            const stats = errorHandler.getErrorStats();
+            const message = `Error Statistics: ${stats.totalErrors} total errors, ${stats.activeNotifications} active notifications`;
+            updateStatus(message, 'info');
+            
+            // Show detailed stats in console
+            console.log('Detailed Error Statistics:', stats);
+        }
+
+        function testErrorRecovery() {
+            // Test various error recovery scenarios
+            const testErrors = [
+                { type: 'storage', message: 'QuotaExceededError: Storage quota exceeded' },
+                { type: 'network', message: 'Failed to fetch' },
+                { type: 'component', message: 'Component render failed' }
+            ];
+            
+            testErrors.forEach((errorInfo, index) => {
+                setTimeout(() => {
+                    const error = new Error(errorInfo.message);
+                    error.name = errorInfo.type === 'storage' ? 'QuotaExceededError' : 'Error';
+                    
+                    switch (errorInfo.type) {
+                        case 'storage':
+                            errorHandler.handleStorageError(error, 'recovery test');
+                            break;
+                        case 'network':
+                            errorHandler.handleNetworkError(error, 'recovery test');
+                            break;
+                        case 'component':
+                            errorHandler.showErrorBoundary(error, 'RecoveryTestComponent');
+                            break;
+                    }
+                }, index * 1000);
+            });
+            
+            updateStatus('Error recovery tests initiated (watch notifications)');
+        }
+
+        // Utility function to clear all notifications
+        function clearNotifications() {
+            if (errorHandler) {
+                errorHandler.clearAllNotifications();
+                updateStatus('All notifications cleared');
+            }
+        }
+
+        // Add keyboard shortcut to clear notifications
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                clearNotifications();
+            }
+        });
+    </script>
+</body>
+</html>

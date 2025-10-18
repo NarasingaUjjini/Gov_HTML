@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScoreChart Tests - AP Government Study Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-output {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .run-tests-btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .run-tests-btn:hover {
+            background: #357abd;
+        }
+        #test-canvas {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>ScoreChart Tests</h1>
+        <p>This page tests the ScoreChart functionality for the AP Government Study Tool.</p>
+        
+        <button class="run-tests-btn" onclick="runTests()">Run ScoreChart Tests</button>
+        
+        <canvas id="test-canvas" width="600" height="300"></canvas>
+        
+        <div id="test-output" class="test-output">Click "Run ScoreChart Tests" to start testing...</div>
+    </div>
+
+    <script src="js/score-chart.js"></script>
+    <script src="js/score-chart.test.js"></script>
+    
+    <script>
+        function runTests() {
+            const outputElement = document.getElementById('test-output');
+            
+            // Capture console output
+            const originalLog = console.log;
+            const originalError = console.error;
+            let output = '';
+            
+            console.log = function(...args) {
+                output += args.join(' ') + '\n';
+                originalLog.apply(console, args);
+            };
+            
+            console.error = function(...args) {
+                output += 'ERROR: ' + args.join(' ') + '\n';
+                originalError.apply(console, args);
+            };
+            
+            try {
+                // Run the tests
+                const results = ScoreChartTests.runAllTests();
+                output += `\nTest Results: ${results.passed} passed, ${results.failed} failed\n`;
+                
+                if (results.failed === 0) {
+                    output += '🎉 All ScoreChart tests passed!\n';
+                } else {
+                    output += `⚠️ ${results.failed} test(s) failed\n`;
+                }
+                
+            } catch (error) {
+                output += `\nFATAL ERROR: ${error.message}\n`;
+                console.error('Test execution failed:', error);
+            }
+            
+            // Restore console
+            console.log = originalLog;
+            console.error = originalError;
+            
+            // Display output
+            outputElement.textContent = output;
+        }
+    </script>
+</body>
+</html>

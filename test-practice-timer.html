@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Test Timer - Test Page</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .test-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #4A90E2;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .test-btn:hover {
+            background: #357abd;
+        }
+        
+        .test-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        
+        .timer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .quiz-simulation {
+            background: #e8f4fd;
+            border: 2px solid #4A90E2;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .quiz-header-sim {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .question-sim {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Practice Test Timer - Test Page</h1>
+    </header>
+
+    <main class="app-main">
+        <div class="test-container">
+            <h2>Timer Functionality Test</h2>
+            
+            <!-- Timer Controls -->
+            <div class="test-section">
+                <h3>Timer Controls</h3>
+                <div class="test-controls">
+                    <button id="start-timer" class="test-btn">Start 80-min Timer</button>
+                    <button id="start-short-timer" class="test-btn">Start 2-min Timer (for testing)</button>
+                    <button id="pause-timer" class="test-btn" disabled>Pause</button>
+                    <button id="resume-timer" class="test-btn" disabled>Resume</button>
+                    <button id="stop-timer" class="test-btn" disabled>Stop</button>
+                    <button id="add-time" class="test-btn" disabled>Add 1 Min</button>
+                </div>
+                
+                <div class="timer-display" id="timer-display">00:00</div>
+                
+                <div class="timer-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Progress</div>
+                        <div class="stat-value" id="progress-stat">0%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Elapsed</div>
+                        <div class="stat-value" id="elapsed-stat">00:00</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" id="status-stat">Stopped</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quiz Engine Integration -->
+            <div class="test-section">
+                <h3>Practice Test Simulation</h3>
+                <div class="test-controls">
+                    <button id="start-practice" class="test-btn">Start Practice Test</button>
+                    <button id="end-practice" class="test-btn" disabled>End Practice Test</button>
+                </div>
+                
+                <div class="quiz-simulation" id="quiz-simulation" style="display: none;">
+                    <div class="quiz-header-sim">
+                        <span id="question-counter-sim">Question 1 of 55</span>
+                        <span id="timer-display-sim" class="quiz-timer">80:00</span>
+                    </div>
+                    
+                    <div class="question-sim">
+                        <p><strong>Sample Question:</strong> Which of the following best describes the principle of federalism in the United States?</p>
+                        <div style="margin-top: 1rem;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="sample-answer" value="0"> A) All power is held by the federal government
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="sample-answer" value="1"> B) Power is shared between federal and state governments
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="sample-answer" value="2"> C) States have complete autonomy
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="sample-answer" value="3"> D) Local governments have supreme authority
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Log -->
+            <div class="test-section">
+                <h3>Event Log</h3>
+                <button id="clear-log" class="test-btn">Clear Log</button>
+                <div id="log-output" class="log-output"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/question.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/quiz-engine.js"></script>
+    <script src="js/sample-questions.js"></script>
+    <script src="js/timer.test.js"></script>
+
+    <script>
+        // Test page functionality
+        let timer = null;
+        let quizEngine = null;
+        let questionManager = null;
+        let progressTracker = null;
+        let storageWrapper = null;
+        
+        // Initialize components
+        function initializeComponents() {
+            storageWrapper = new StorageWrapper();
+            progressTracker = new ProgressTracker(storageWrapper);
+            questionManager = new QuestionManager();
+            
+            // Load sample questions
+            if (typeof sampleQuestions !== 'undefined') {
+                questionManager.loadQuestions(sampleQuestions);
+                log('Sample questions loaded: ' + sampleQuestions.length + ' questions');
+            }
+            
+            quizEngine = new QuizEngine(questionManager, progressTracker);
+            setupQuizEngineEvents();
+        }
+        
+        // Setup quiz engine events
+        function setupQuizEngineEvents() {
+            quizEngine.onTimerTick = (data) => {
+                updateTimerDisplay(data.formatted);
+                updateTimerStats(data);
+            };
+            
+            quizEngine.onTimerWarning = (data) => {
+                log(`Timer Warning: ${data.message}`);
+                showNotification(data.message, 'warning');
+            };
+            
+            quizEngine.onModeSpecificEvent = (event) => {
+                if (event.type === 'auto_submit') {
+                    log('Practice test auto-submitted due to time expiration');
+                    showNotification('Time expired! Test auto-submitted.', 'error');
+                    document.getElementById('end-practice').disabled = true;
+                    document.getElementById('start-practice').disabled = false;
+                    document.getElementById('quiz-simulation').style.display = 'none';
+                }
+            };
+            
+            quizEngine.onQuizComplete = (results) => {
+                log(`Quiz completed: ${results.score.correct}/${results.score.total} (${results.score.percentage}%)`);
+                document.getElementById('end-practice').disabled = true;
+                document.getElementById('start-practice').disabled = false;
+                document.getElementById('quiz-simulation').style.display = 'none';
+            };
+        }
+        
+        // Timer controls
+        document.getElementById('start-timer').addEventListener('click', () => {
+            if (timer) timer.destroy();
+            timer = new Timer();
+            setupTimerEvents();
+            timer.start(80);
+            updateTimerControls(true);
+            log('Started 80-minute timer');
+        });
+        
+        document.getElementById('start-short-timer').addEventListener('click', () => {
+            if (timer) timer.destroy();
+            timer = new Timer();
+            setupTimerEvents();
+            timer.start(2); // 2 minutes for testing
+            updateTimerControls(true);
+            log('Started 2-minute timer for testing');
+        });
+        
+        document.getElementById('pause-timer').addEventListener('click', () => {
+            if (timer) {
+                timer.pause();
+                updateTimerControls(true, true);
+                log('Timer paused');
+            }
+        });
+        
+        document.getElementById('resume-timer').addEventListener('click', () => {
+            if (timer) {
+                timer.resume();
+                updateTimerControls(true, false);
+                log('Timer resumed');
+            }
+        });
+        
+        document.getElementById('stop-timer').addEventListener('click', () => {
+            if (timer) {
+                timer.stop();
+                updateTimerControls(false);
+                log('Timer stopped');
+            }
+        });
+        
+        document.getElementById('add-time').addEventListener('click', () => {
+            if (timer) {
+                timer.addTime(1);
+                log('Added 1 minute to timer');
+            }
+        });
+        
+        // Practice test controls
+        document.getElementById('start-practice').addEventListener('click', () => {
+            try {
+                quizEngine.startQuiz('practice');
+                document.getElementById('start-practice').disabled = true;
+                document.getElementById('end-practice').disabled = false;
+                document.getElementById('quiz-simulation').style.display = 'block';
+                log('Started practice test with timer');
+            } catch (error) {
+                log('Error starting practice test: ' + error.message);
+            }
+        });
+        
+        document.getElementById('end-practice').addEventListener('click', () => {
+            try {
+                const results = quizEngine.endQuiz();
+                document.getElementById('end-practice').disabled = true;
+                document.getElementById('start-practice').disabled = false;
+                document.getElementById('quiz-simulation').style.display = 'none';
+                log('Practice test ended manually');
+            } catch (error) {
+                log('Error ending practice test: ' + error.message);
+            }
+        });
+        
+        document.getElementById('clear-log').addEventListener('click', () => {
+            document.getElementById('log-output').textContent = '';
+        });
+        
+        // Setup timer events
+        function setupTimerEvents() {
+            timer.onTick = (data) => {
+                updateTimerDisplay(data.formatted);
+                updateTimerStats(data);
+            };
+            
+            timer.onTimeUp = () => {
+                log('Timer expired!');
+                showNotification('Time is up!', 'error');
+                updateTimerControls(false);
+            };
+            
+            timer.onWarning = (data) => {
+                log(`Warning: ${data.threshold} minutes remaining`);
+                showNotification(`${data.threshold} minutes remaining`, 'warning');
+            };
+        }
+        
+        // Update timer display
+        function updateTimerDisplay(formatted) {
+            document.getElementById('timer-display').textContent = formatted;
+            const simDisplay = document.getElementById('timer-display-sim');
+            if (simDisplay) {
+                simDisplay.textContent = formatted;
+                
+                // Add warning classes
+                const remainingMs = timer ? timer.getTimeRemaining() : 0;
+                const remainingMin = Math.ceil(remainingMs / (60 * 1000));
+                simDisplay.classList.toggle('warning', remainingMin <= 5);
+                simDisplay.classList.toggle('critical', remainingMin <= 1);
+            }
+        }
+        
+        // Update timer stats
+        function updateTimerStats(data) {
+            document.getElementById('progress-stat').textContent = Math.round(data.progress) + '%';
+            document.getElementById('elapsed-stat').textContent = timer.formatTime(data.elapsed);
+            
+            let status = 'Stopped';
+            if (timer && timer.isRunning) {
+                status = timer.isPaused ? 'Paused' : 'Running';
+            }
+            document.getElementById('status-stat').textContent = status;
+        }
+        
+        // Update timer control buttons
+        function updateTimerControls(running, paused = false) {
+            document.getElementById('start-timer').disabled = running;
+            document.getElementById('start-short-timer').disabled = running;
+            document.getElementById('pause-timer').disabled = !running || paused;
+            document.getElementById('resume-timer').disabled = !running || !paused;
+            document.getElementById('stop-timer').disabled = !running;
+            document.getElementById('add-time').disabled = !running;
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type} show`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close">&times;</button>
+                </div>
+            `;
+            
+            let container = document.getElementById('notification-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notification-container';
+                container.className = 'notification-container';
+                document.body.appendChild(container);
+            }
+            
+            container.appendChild(notification);
+            
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            });
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+        
+        // Log function
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logOutput = document.getElementById('log-output');
+            logOutput.textContent += `[${timestamp}] ${message}\n`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeComponents();
+            log('Test page initialized');
+            
+            // Run timer tests
+            if (typeof runTimerTests === 'function') {
+                const results = runTimerTests();
+                log(`Timer tests completed: ${results.passed} passed, ${results.failed} failed`);
+            }
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (timer) timer.destroy();
+        });
+    </script>
+</body>
+</html>

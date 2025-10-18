@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Mode Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Study Mode Test</h1>
+    </header>
+
+    <main class="app-main">
+        <!-- Quiz View -->
+        <section id="quiz" class="view active">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <span id="question-counter">Study Question 1</span>
+                </div>
+                <div class="quiz-timer" style="display: none;">
+                    <span id="timer-display">80:00</span>
+                </div>
+            </div>
+
+            <div class="quiz-content">
+                <div id="question-container" class="question-container">
+                    <!-- Question content will be dynamically loaded -->
+                </div>
+            </div>
+
+            <div class="quiz-controls">
+                <button id="prev-btn" class="control-btn" style="display: none;" disabled>Previous</button>
+                <button id="next-btn" class="control-btn" style="display: none;">Next</button>
+                <button id="submit-btn" class="control-btn primary">Submit Answer</button>
+                <button id="end-quiz-btn" class="control-btn secondary">End Study Session</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Core classes -->
+    <script src="js/question.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/quiz-engine.js"></script>
+    <script src="js/sample-questions.js"></script>
+    
+    <!-- Main application -->
+    <script type="module" src="js/app.js"></script>
+
+    <script>
+        // Test study mode functionality
+        let app;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize app
+            app = new App();
+            await app.init();
+            
+            // Start study mode
+            app.currentMode = 'study';
+            app.startStudyMode();
+            
+            console.log('Study mode test initialized');
+            
+            // Add test buttons
+            const testControls = document.createElement('div');
+            testControls.innerHTML = `
+                <div style="position: fixed; top: 10px; right: 10px; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                    <h4>Test Controls</h4>
+                    <button onclick="testCorrectAnswer()">Select Correct Answer</button>
+                    <button onclick="testIncorrectAnswer()">Select Incorrect Answer</button>
+                    <button onclick="testContinue()">Test Continue</button>
+                </div>
+            `;
+            document.body.appendChild(testControls);
+        });
+        
+        function testCorrectAnswer() {
+            const currentQuestion = app.quizEngine.getCurrentQuestion();
+            if (currentQuestion) {
+                const correctIndex = currentQuestion.correct;
+                const answerOptions = document.querySelectorAll('.answer-option');
+                if (answerOptions[correctIndex]) {
+                    answerOptions[correctIndex].click();
+                    setTimeout(() => {
+                        document.getElementById('submit-btn').click();
+                    }, 100);
+                }
+            }
+        }
+        
+        function testIncorrectAnswer() {
+            const currentQuestion = app.quizEngine.getCurrentQuestion();
+            if (currentQuestion) {
+                const correctIndex = currentQuestion.correct;
+                const incorrectIndex = correctIndex === 0 ? 1 : 0;
+                const answerOptions = document.querySelectorAll('.answer-option');
+                if (answerOptions[incorrectIndex]) {
+                    answerOptions[incorrectIndex].click();
+                    setTimeout(() => {
+                        document.getElementById('submit-btn').click();
+                    }, 100);
+                }
+            }
+        }
+        
+        function testContinue() {
+            const continueBtn = document.getElementById('continue-study-btn');
+            if (continueBtn) {
+                continueBtn.click();
+            } else {
+                console.log('Continue button not found - submit an answer first');
+            }
+        }
+    </script>
+</body>
+</html>
+</text>
+</invoke>

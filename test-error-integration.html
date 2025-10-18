@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling Integration Test - AP Government Study Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/error-handling.css">
+    <style>
+        .integration-test {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .test-scenario {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-scenario h3 {
+            margin-top: 0;
+            color: #4A90E2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+        
+        .status-running {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .status-passed {
+            background: #00b894;
+            color: white;
+        }
+        
+        .status-failed {
+            background: #e17055;
+            color: white;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .test-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .test-btn.primary {
+            background-color: #4A90E2;
+            color: white;
+        }
+        
+        .test-btn.success {
+            background-color: #00b894;
+            color: white;
+        }
+        
+        .test-btn.danger {
+            background-color: #e17055;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .test-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .test-results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 4px;
+            border-left: 4px solid #4A90E2;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .overall-status {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4A90E2;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Error Handling Integration Test Suite</h1>
+        <nav class="main-nav">
+            <button onclick="window.location.href='index.html'" class="nav-btn">Back to App</button>
+            <button onclick="window.location.href='test-error-handling.html'" class="nav-btn">Unit Tests</button>
+        </nav>
+    </header>
+
+    <main class="app-main">
+        <div class="integration-test">
+            <div class="overall-status">
+                <h2>Integration Test Status</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                </div>
+                <p id="overall-status-text">Ready to run integration tests</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runAllTests()">Run All Tests</button>
+                    <button class="test-btn success" onclick="runQuickTest()">Quick Test</button>
+                    <button class="test-btn danger" onclick="resetTests()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Storage Error Handling Integration -->
+            <div class="test-scenario" id="storage-test">
+                <h3>
+                    Storage Error Handling Integration
+                    <span class="test-status status-pending" id="storage-status">PENDING</span>
+                </h3>
+                <p>Tests graceful degradation when storage fails, including quota exceeded and unavailable scenarios.</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runStorageTest()">Run Test</button>
+                </div>
+                <div class="test-results" id="storage-results" style="display: none;"></div>
+            </div>
+
+            <!-- Quiz Error Recovery Integration -->
+            <div class="test-scenario" id="quiz-test">
+                <h3>
+                    Quiz Error Recovery Integration
+                    <span class="test-status status-pending" id="quiz-status">PENDING</span>
+                </h3>
+                <p>Tests error handling during quiz operations, including timer failures and state corruption.</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runQuizTest()">Run Test</button>
+                </div>
+                <div class="test-results" id="quiz-results" style="display: none;"></div>
+            </div>
+
+            <!-- Navigation Error Handling Integration -->
+            <div class="test-scenario" id="navigation-test">
+                <h3>
+                    Navigation Error Handling Integration
+                    <span class="test-status status-pending" id="navigation-status">PENDING</span>
+                </h3>
+                <p>Tests navigation warnings, confirmation dialogs, and recovery from navigation failures.</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runNavigationTest()">Run Test</button>
+                </div>
+                <div class="test-results" id="navigation-results" style="display: none;"></div>
+            </div>
+
+            <!-- User Feedback Integration -->
+            <div class="test-scenario" id="feedback-test">
+                <h3>
+                    User Feedback Integration
+                    <span class="test-status status-pending" id="feedback-status">PENDING</span>
+                </h3>
+                <p>Tests notification system, loading indicators, and user-friendly error messages.</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runFeedbackTest()">Run Test</button>
+                </div>
+                <div class="test-results" id="feedback-results" style="display: none;"></div>
+            </div>
+
+            <!-- Error Recovery and Resilience -->
+            <div class="test-scenario" id="resilience-test">
+                <h3>
+                    Error Recovery and Resilience
+                    <span class="test-status status-pending" id="resilience-status">PENDING</span>
+                </h3>
+                <p>Tests system recovery from multiple simultaneous errors and edge cases.</p>
+                <div class="test-controls">
+                    <button class="test-btn primary" onclick="runResilienceTest()">Run Test</button>
+                </div>
+                <div class="test-results" id="resilience-results" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Load all required components -->
+    <script src="js/error-handler.js"></script>
+    <script src="js/confirmation-dialogs.js"></script>
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/progress-tracker.js"></script>
+
+    <script>
+        // Test framework
+        class IntegrationTestFramework {
+            constructor() {
+                this.tests = new Map();
+                this.results = new Map();
+                this.currentTest = null;
+                this.totalTests = 0;
+                this.completedTests = 0;
+                
+                // Initialize components
+                this.errorHandler = null;
+                this.confirmationDialogs = null;
+                this.storageWrapper = null;
+                this.progressTracker = null;
+                
+                this.initializeComponents();
+            }
+
+            async initializeComponents() {
+                try {
+                    this.errorHandler = new ErrorHandler();
+                    this.confirmationDialogs = new ConfirmationDialogs(this.errorHandler);
+                    this.storageWrapper = new StorageWrapper(this.errorHandler);
+                    this.progressTracker = new ProgressTracker(this.storageWrapper);
+                    
+                    this.log('Integration test framework initialized successfully');
+                } catch (error) {
+                    this.log(`Failed to initialize test framework: ${error.message}`, 'error');
+                }
+            }
+
+            registerTest(name, testFunction) {
+                this.tests.set(name, testFunction);
+                this.totalTests++;
+            }
+
+            async runTest(name) {
+                if (!this.tests.has(name)) {
+                    throw new Error(`Test '${name}' not found`);
+                }
+
+                this.currentTest = name;
+                this.updateTestStatus(name, 'running');
+                this.showTestResults(name);
+                
+                try {
+                    const testFunction = this.tests.get(name);
+                    const result = await testFunction.call(this);
+                    
+                    this.results.set(name, { status: 'passed', result });
+                    this.updateTestStatus(name, 'passed');
+                    this.logToTest(name, `✅ Test passed: ${JSON.stringify(result)}`);
+                    
+                } catch (error) {
+                    this.results.set(name, { status: 'failed', error: error.message });
+                    this.updateTestStatus(name, 'failed');
+                    this.logToTest(name, `❌ Test failed: ${error.message}`);
+                }
+                
+                this.completedTests++;
+                this.updateOverallProgress();
+                this.currentTest = null;
+            }
+
+            async runAllTests() {
+                this.resetAllTests();
+                
+                for (const testName of this.tests.keys()) {
+                    await this.runTest(testName);
+                    // Small delay between tests
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                this.showFinalResults();
+            }
+
+            updateTestStatus(testName, status) {
+                const statusElement = document.getElementById(`${testName}-status`);
+                if (statusElement) {
+                    statusElement.textContent = status.toUpperCase();
+                    statusElement.className = `test-status status-${status}`;
+                }
+            }
+
+            showTestResults(testName) {
+                const resultsElement = document.getElementById(`${testName}-results`);
+                if (resultsElement) {
+                    resultsElement.style.display = 'block';
+                    resultsElement.innerHTML = '';
+                }
+            }
+
+            logToTest(testName, message) {
+                const resultsElement = document.getElementById(`${testName}-results`);
+                if (resultsElement) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    resultsElement.innerHTML += `[${timestamp}] ${message}\n`;
+                    resultsElement.scrollTop = resultsElement.scrollHeight;
+                }
+            }
+
+            log(message, level = 'info') {
+                console.log(`[IntegrationTest] ${message}`);
+                if (this.currentTest) {
+                    this.logToTest(this.currentTest, message);
+                }
+            }
+
+            updateOverallProgress() {
+                const progress = (this.completedTests / this.totalTests) * 100;
+                const progressBar = document.getElementById('overall-progress');
+                const statusText = document.getElementById('overall-status-text');
+                
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+                
+                if (statusText) {
+                    statusText.textContent = `${this.completedTests}/${this.totalTests} tests completed (${Math.round(progress)}%)`;
+                }
+            }
+
+            resetAllTests() {
+                this.results.clear();
+                this.completedTests = 0;
+                
+                for (const testName of this.tests.keys()) {
+                    this.updateTestStatus(testName, 'pending');
+                    const resultsElement = document.getElementById(`${testName}-results`);
+                    if (resultsElement) {
+                        resultsElement.style.display = 'none';
+                        resultsElement.innerHTML = '';
+                    }
+                }
+                
+                this.updateOverallProgress();
+            }
+
+            showFinalResults() {
+                const passed = Array.from(this.results.values()).filter(r => r.status === 'passed').length;
+                const failed = this.results.size - passed;
+                
+                this.log(`\n=== FINAL RESULTS ===`);
+                this.log(`Total Tests: ${this.results.size}`);
+                this.log(`Passed: ${passed}`);
+                this.log(`Failed: ${failed}`);
+                this.log(`Success Rate: ${Math.round((passed / this.results.size) * 100)}%`);
+                
+                if (failed === 0) {
+                    this.errorHandler.showNotification('All integration tests passed! 🎉', 'success', 5000);
+                } else {
+                    this.errorHandler.showNotification(`${failed} test(s) failed. Check results for details.`, 'warning', 8000);
+                }
+            }
+
+            // Utility methods for tests
+            async delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            async expectError(asyncFunction, expectedErrorMessage = null) {
+                try {
+                    await asyncFunction();
+                    throw new Error('Expected function to throw an error, but it did not');
+                } catch (error) {
+                    if (expectedErrorMessage && !error.message.includes(expectedErrorMessage)) {
+                        throw new Error(`Expected error message to contain "${expectedErrorMessage}", but got "${error.message}"`);
+                    }
+                    return error;
+                }
+            }
+
+            async expectNoError(asyncFunction) {
+                try {
+                    return await asyncFunction();
+                } catch (error) {
+                    throw new Error(`Expected function not to throw an error, but got: ${error.message}`);
+                }
+            }
+        }
+
+        // Initialize test framework
+        const testFramework = new IntegrationTestFramework();
+
+        // Storage Error Handling Integration Test
+        testFramework.registerTest('storage', async function() {
+            this.log('Testing storage error handling integration...');
+            
+            // Test 1: Storage quota exceeded
+            this.log('Test 1: Storage quota exceeded scenario');
+            const quotaError = new Error('Storage quota exceeded');
+            quotaError.name = 'QuotaExceededError';
+            
+            const result1 = this.errorHandler.handleStorageError(quotaError, 'integration test');
+            if (!result1.handled || !result1.fallbackAvailable) {
+                throw new Error('Storage quota error not handled properly');
+            }
+            
+            // Test 2: Storage unavailable with fallback
+            this.log('Test 2: Storage unavailable with session fallback');
+            const originalSetItem = this.storageWrapper.setItem;
+            let fallbackUsed = false;
+            
+            // Mock storage failure
+            this.storageWrapper.isLocalStorageAvailable = false;
+            const success = this.storageWrapper.setItem('test-key', { test: 'data' });
+            
+            if (!success) {
+                throw new Error('Storage fallback mechanism failed');
+            }
+            
+            // Test 3: Progress tracker recovery
+            this.log('Test 3: Progress tracker error recovery');
+            try {
+                this.progressTracker.updateUnitProgress(1, 5, 3); // Should fail (correct > total)
+            } catch (error) {
+                // Expected error
+            }
+            
+            // Verify progress tracker is still functional
+            this.progressTracker.updateUnitProgress(1, 3, 5);
+            const aptitude = this.progressTracker.getUnitAptitude(1);
+            
+            if (aptitude !== 60) {
+                throw new Error(`Expected aptitude 60%, got ${aptitude}%`);
+            }
+            
+            return { quotaHandled: result1.handled, fallbackWorking: success, recoveryWorking: aptitude === 60 };
+        });
+
+        // Quiz Error Recovery Integration Test
+        testFramework.registerTest('quiz', async function() {
+            this.log('Testing quiz error recovery integration...');
+            
+            // Test 1: Timer error handling
+            this.log('Test 1: Timer error handling and recovery');
+            const timer = new Timer();
+            
+            // Test invalid start parameters
+            await this.expectError(() => timer.start(-5), 'positive number');
+            
+            // Test normal operation after error
+            timer.start(1); // 1 minute timer
+            if (!timer.isRunning) {
+                throw new Error('Timer should be running after valid start');
+            }
+            
+            timer.stop();
+            
+            // Test 2: Progress tracker validation
+            this.log('Test 2: Progress tracker state validation');
+            const stats = this.progressTracker.getProgressStats();
+            
+            if (typeof stats.totalQuestionsSeen !== 'number') {
+                throw new Error('Progress stats validation failed');
+            }
+            
+            // Test 3: Error boundary simulation
+            this.log('Test 3: Component error boundary');
+            const componentError = new Error('Component render failed');
+            this.errorHandler.showErrorBoundary(componentError, 'TestComponent');
+            
+            // Verify error was logged
+            const errorStats = this.errorHandler.getErrorStats();
+            if (errorStats.totalErrors === 0) {
+                throw new Error('Error was not properly logged');
+            }
+            
+            return { timerRecovery: true, progressValidation: true, errorBoundary: true };
+        });
+
+        // Navigation Error Handling Integration Test
+        testFramework.registerTest('navigation', async function() {
+            this.log('Testing navigation error handling integration...');
+            
+            // Test 1: Confirmation dialogs
+            this.log('Test 1: Confirmation dialog system');
+            
+            // Test basic confirmation (auto-resolve for testing)
+            const confirmPromise = this.errorHandler.showConfirmDialog('Test confirmation');
+            
+            // Simulate user clicking cancel after a short delay
+            setTimeout(() => {
+                const cancelBtn = document.querySelector('[data-action="cancel"]');
+                if (cancelBtn) cancelBtn.click();
+            }, 100);
+            
+            const confirmed = await confirmPromise;
+            if (confirmed !== false) {
+                throw new Error('Confirmation dialog should have returned false');
+            }
+            
+            // Test 2: Quiz-specific confirmations
+            this.log('Test 2: Quiz-specific confirmation dialogs');
+            const mockQuizState = {
+                mode: 'practice',
+                currentQuestion: 25,
+                totalQuestions: 55,
+                answeredCount: 20,
+                timeRemaining: '45:30'
+            };
+            
+            const endQuizPromise = this.confirmationDialogs.confirmEndQuiz(mockQuizState);
+            
+            // Auto-resolve for testing
+            setTimeout(() => {
+                const cancelBtn = document.querySelector('[data-action="cancel"]');
+                if (cancelBtn) cancelBtn.click();
+            }, 100);
+            
+            const endConfirmed = await endQuizPromise;
+            if (endConfirmed !== false) {
+                throw new Error('End quiz confirmation should have returned false');
+            }
+            
+            return { basicConfirmation: true, quizConfirmation: true };
+        });
+
+        // User Feedback Integration Test
+        testFramework.registerTest('feedback', async function() {
+            this.log('Testing user feedback integration...');
+            
+            // Test 1: Notification system
+            this.log('Test 1: Notification system');
+            const notificationId = this.errorHandler.showNotification('Test notification', 'info', 1000);
+            
+            if (!notificationId) {
+                throw new Error('Notification ID should be returned');
+            }
+            
+            // Test 2: Loading indicators
+            this.log('Test 2: Loading indicators');
+            const loading = this.errorHandler.showLoading('Test loading...', { overlay: false });
+            
+            if (!loading || typeof loading.remove !== 'function') {
+                throw new Error('Loading indicator should return controller object');
+            }
+            
+            loading.update('Updated message');
+            await this.delay(500);
+            loading.remove();
+            
+            // Test 3: Multiple notification management
+            this.log('Test 3: Multiple notification management');
+            const notifications = [];
+            for (let i = 0; i < 3; i++) {
+                notifications.push(this.errorHandler.showNotification(`Notification ${i + 1}`, 'info', 2000));
+            }
+            
+            if (notifications.length !== 3) {
+                throw new Error('Should be able to create multiple notifications');
+            }
+            
+            return { notifications: true, loading: true, multipleNotifications: true };
+        });
+
+        // Error Recovery and Resilience Test
+        testFramework.registerTest('resilience', async function() {
+            this.log('Testing error recovery and resilience...');
+            
+            // Test 1: Multiple simultaneous errors
+            this.log('Test 1: Multiple simultaneous errors');
+            const errors = [
+                { type: 'storage', error: new Error('Storage error') },
+                { type: 'network', error: new Error('Network error') },
+                { type: 'component', error: new Error('Component error') }
+            ];
+            
+            // Trigger multiple errors simultaneously
+            errors.forEach(({ type, error }) => {
+                switch (type) {
+                    case 'storage':
+                        this.errorHandler.handleStorageError(error, 'resilience test');
+                        break;
+                    case 'network':
+                        this.errorHandler.handleNetworkError(error, 'resilience test');
+                        break;
+                    case 'component':
+                        this.errorHandler.showErrorBoundary(error, 'ResilienceTestComponent');
+                        break;
+                }
+            });
+            
+            // Test 2: System recovery after errors
+            this.log('Test 2: System recovery after errors');
+            
+            // Verify system is still functional
+            const testNotification = this.errorHandler.showNotification('Recovery test', 'success', 1000);
+            if (!testNotification) {
+                throw new Error('System should still be functional after multiple errors');
+            }
+            
+            // Test 3: Error statistics and monitoring
+            this.log('Test 3: Error statistics and monitoring');
+            const stats = this.errorHandler.getErrorStats();
+            
+            if (stats.totalErrors < 3) {
+                throw new Error('Error statistics should reflect the triggered errors');
+            }
+            
+            // Test 4: Cleanup and resource management
+            this.log('Test 4: Cleanup and resource management');
+            this.errorHandler.clearAllNotifications();
+            this.errorHandler.clearErrorLog();
+            
+            const clearedStats = this.errorHandler.getErrorStats();
+            if (clearedStats.totalErrors !== 0) {
+                throw new Error('Error log should be cleared');
+            }
+            
+            return { 
+                multipleErrors: true, 
+                systemRecovery: true, 
+                errorMonitoring: true, 
+                cleanup: true 
+            };
+        });
+
+        // Global test control functions
+        async function runAllTests() {
+            await testFramework.runAllTests();
+        }
+
+        async function runQuickTest() {
+            testFramework.resetAllTests();
+            await testFramework.runTest('feedback');
+            await testFramework.runTest('storage');
+        }
+
+        function resetTests() {
+            testFramework.resetAllTests();
+        }
+
+        // Individual test functions
+        async function runStorageTest() {
+            await testFramework.runTest('storage');
+        }
+
+        async function runQuizTest() {
+            await testFramework.runTest('quiz');
+        }
+
+        async function runNavigationTest() {
+            await testFramework.runTest('navigation');
+        }
+
+        async function runFeedbackTest() {
+            await testFramework.runTest('feedback');
+        }
+
+        async function runResilienceTest() {
+            await testFramework.runTest('resilience');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Error Handling Integration Test Suite loaded');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Management Verification - AP Government Study Tool</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #2d2d30;
+            border-radius: 8px;
+        }
+        .console {
+            background: #0c0c0c;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-family: inherit;
+        }
+        .btn:hover {
+            background: #1177bb;
+        }
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .status.loading {
+            background: #1a472a;
+            color: #4caf50;
+        }
+        .status.success {
+            background: #1a472a;
+            color: #4caf50;
+        }
+        .status.error {
+            background: #5d1a1a;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 State Management Verification</h1>
+            <p>Testing Task 12: Application State Management and Navigation</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="runTests" onclick="runVerification()">Run Verification Tests</button>
+            <button class="btn" id="clearConsole" onclick="clearConsole()">Clear Console</button>
+            <button class="btn" id="showState" onclick="showCurrentState()">Show App State</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div id="console" class="console">
+Waiting for verification to start...
+
+Click "Run Verification Tests" to begin testing the state management implementation.
+        </div>
+    </div>
+
+    <!-- Include all required dependencies -->
+    <script src="js/storage-wrapper.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/question-manager.js"></script>
+    <script src="js/quiz-engine.js"></script>
+    <script src="js/sample-questions.js"></script>
+    <script src="js/app.js"></script>
+    <script src="verify-state-management.js"></script>
+
+    <script>
+        let consoleElement;
+        let statusElement;
+        let originalConsoleLog;
+        let originalConsoleError;
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            consoleElement = document.getElementById('console');
+            statusElement = document.getElementById('status');
+            
+            // Capture console output
+            setupConsoleCapture();
+            
+            // Show initial status
+            showStatus('Ready to run verification tests', 'loading');
+        });
+
+        function setupConsoleCapture() {
+            originalConsoleLog = console.log;
+            originalConsoleError = console.error;
+            
+            console.log = function(...args) {
+                originalConsoleLog.apply(console, args);
+                appendToConsole(args.join(' '), 'log');
+            };
+            
+            console.error = function(...args) {
+                originalConsoleError.apply(console, args);
+                appendToConsole(args.join(' '), 'error');
+            };
+        }
+
+        function appendToConsole(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : 'ℹ️';
+            const line = `[${timestamp}] ${prefix} ${message}\n`;
+            
+            consoleElement.textContent += line;
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+
+        function showStatus(message, type) {
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = 'block';
+        }
+
+        function clearConsole() {
+            consoleElement.textContent = 'Console cleared.\n';
+        }
+
+        async function runVerification() {
+            const runButton = document.getElementById('runTests');
+            runButton.disabled = true;
+            
+            try {
+                showStatus('Running verification tests...', 'loading');
+                clearConsole();
+                
+                console.log('🚀 Starting State Management Verification');
+                console.log('==========================================\n');
+                
+                // Wait for app to be ready
+                if (!window.app) {
+                    console.log('⏳ Waiting for application to initialize...');
+                    await waitForApp();
+                }
+                
+                // Run verification
+                const verifier = new StateManagementVerifier();
+                const success = await verifier.runAllTests();
+                
+                if (success) {
+                    showStatus('✅ All tests passed! State management is working correctly.', 'success');
+                } else {
+                    showStatus('❌ Some tests failed. Check console for details.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Verification failed:', error);
+                showStatus('❌ Verification failed with error: ' + error.message, 'error');
+            } finally {
+                runButton.disabled = false;
+            }
+        }
+
+        function waitForApp() {
+            return new Promise((resolve, reject) => {
+                const checkApp = () => {
+                    if (window.app && window.app.isInitialized) {
+                        console.log('✅ Application ready');
+                        resolve();
+                    } else if (Date.now() - startTime > 10000) {
+                        reject(new Error('App initialization timeout'));
+                    } else {
+                        setTimeout(checkApp, 100);
+                    }
+                };
+                
+                const startTime = Date.now();
+                checkApp();
+            });
+        }
+
+        function showCurrentState() {
+            try {
+                if (!window.app) {
+                    console.log('❌ Application not available');
+                    return;
+                }
+                
+                console.log('📊 Current Application State:');
+                console.log('============================');
+                
+                const state = window.app.getState();
+                console.log(JSON.stringify(state, null, 2));
+                
+                console.log('\n📈 State Management Info:');
+                console.log(`Session ID: ${window.app.state.sessionId}`);
+                console.log(`Current View: ${window.app.currentView}`);
+                console.log(`Current Mode: ${window.app.currentMode || 'None'}`);
+                console.log(`Navigation History: ${window.app.getNavigationHistory().length} entries`);
+                console.log(`State Corrupted: ${window.app.state.isStateCorrupted}`);
+                
+            } catch (error) {
+                console.error('Failed to show state:', error);
+            }
+        }
+
+        // Auto-run verification after app loads (optional)
+        // Uncomment the next line to auto-run tests
+        // setTimeout(() => runVerification(), 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Quiz Interface Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Enhanced Quiz Interface Test</h1>
+    </header>
+
+    <main class="app-main">
+        <!-- Quiz View -->
+        <section id="quiz" class="view active">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <span id="question-counter">Question 1 of 10</span>
+                    <div id="progress-bar-container" class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar" style="width: 10%;"></div>
+                    </div>
+                </div>
+                <div class="quiz-timer">
+                    <span id="timer-display">75:30</span>
+                </div>
+            </div>
+
+            <div class="quiz-content">
+                <div id="question-container" class="question-container">
+                    <div class="question-text">Which of the following best describes the concept of federalism in the United States?</div>
+                    <div class="answer-options">
+                        <label class="answer-option" data-answer-index="0">
+                            <input type="radio" name="answer" value="0">
+                            <span class="answer-text">The national government has complete authority over state governments</span>
+                        </label>
+                        <label class="answer-option selected" data-answer-index="1">
+                            <input type="radio" name="answer" value="1" checked>
+                            <span class="answer-text">Power is shared between national and state governments</span>
+                        </label>
+                        <label class="answer-option" data-answer-index="2">
+                            <input type="radio" name="answer" value="2">
+                            <span class="answer-text">State governments have complete authority over the national government</span>
+                        </label>
+                        <label class="answer-option" data-answer-index="3">
+                            <input type="radio" name="answer" value="3">
+                            <span class="answer-text">Local governments have the most authority in the system</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="question-status" class="question-status">
+                    <h4>Question Status</h4>
+                    <div class="status-grid">
+                        <div class="status-item current" title="Question 1 (Current)">1</div>
+                        <div class="status-item answered" title="Question 2 (Answered)">2</div>
+                        <div class="status-item answered" title="Question 3 (Answered)">3</div>
+                        <div class="status-item unanswered" title="Question 4 (Not answered)">4</div>
+                        <div class="status-item unanswered" title="Question 5 (Not answered)">5</div>
+                        <div class="status-item unanswered" title="Question 6 (Not answered)">6</div>
+                        <div class="status-item unanswered" title="Question 7 (Not answered)">7</div>
+                        <div class="status-item unanswered" title="Question 8 (Not answered)">8</div>
+                        <div class="status-item unanswered" title="Question 9 (Not answered)">9</div>
+                        <div class="status-item unanswered" title="Question 10 (Not answered)">10</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-controls">
+                <button id="prev-btn" class="control-btn">Previous</button>
+                <button id="next-btn" class="control-btn">Next</button>
+                <button id="submit-btn" class="control-btn primary">Submit Answer</button>
+                <button id="end-quiz-btn" class="control-btn secondary">End Quiz</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Test completion modal
+        function showTestModal() {
+            const modal = document.createElement('div');
+            modal.className = 'completion-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Quiz Progress</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="completion-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">7</span>
+                                <span class="stat-label">Answered</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">3</span>
+                                <span class="stat-label">Remaining</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">10</span>
+                                <span class="stat-label">Total</span>
+                            </div>
+                        </div>
+                        <p>You still have 3 unanswered questions. You can continue answering or end the quiz now.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn secondary" onclick="closeModal()">Continue Quiz</button>
+                        <button class="modal-btn primary" onclick="closeModal()">End Quiz</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+            
+            // Close on overlay click
+            modal.querySelector('.modal-overlay').addEventListener('click', closeModal);
+        }
+        
+        function closeModal() {
+            if (window.currentModal) {
+                document.body.removeChild(window.currentModal);
+                window.currentModal = null;
+            }
+        }
+        
+        // Add test controls
+        document.addEventListener('DOMContentLoaded', () => {
+            const testControls = document.createElement('div');
+            testControls.innerHTML = `
+                <div style="position: fixed; top: 10px; right: 10px; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px; z-index: 999;">
+                    <h4>Test Controls</h4>
+                    <button onclick="showTestModal()">Show Completion Modal</button>
+                    <p style="font-size: 0.8rem; margin: 10px 0 0 0;">
+                        Keyboard shortcuts:<br>
+                        • Arrow keys: Navigate<br>
+                        • 1-4: Select answers<br>
+                        • Enter: Submit<br>
+                        • Escape: End quiz
+                    </p>
+                </div>
+            `;
+            document.body.appendChild(testControls);
+        });
+    </script>
+</body>
+</html>
+</text>
