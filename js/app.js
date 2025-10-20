@@ -1434,11 +1434,22 @@ class App {
      */
     refreshQuizUI() {
         try {
+            console.log('refreshQuizUI called');
+            console.log('this.quizEngine:', this.quizEngine);
+            console.log('this.quizEngine.isActive:', this.quizEngine ? this.quizEngine.isActive : 'N/A');
+            console.log('getCurrentQuestionData method exists:', this.quizEngine ? typeof this.quizEngine.getCurrentQuestionData : 'N/A');
+            
             if (this.quizEngine && this.quizEngine.isActive) {
-                const currentData = this.quizEngine.getCurrentQuestionData();
-                if (currentData) {
-                    this.updateQuestionDisplay(currentData);
-                    this.updateQuizControls(currentData);
+                // Check if the method exists before calling it
+                if (typeof this.quizEngine.getCurrentQuestionData === 'function') {
+                    const currentData = this.quizEngine.getCurrentQuestionData();
+                    if (currentData) {
+                        this.updateQuestionDisplay(currentData);
+                        this.updateQuizControls(currentData);
+                    }
+                } else {
+                    console.error('getCurrentQuestionData method not found on quizEngine instance');
+                    console.log('Available methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.quizEngine)));
                 }
             }
         } catch (error) {
@@ -3248,7 +3259,7 @@ class App {
             answers: this.quizEngine.answers,
             startTime: this.quizEngine.startTime,
             questions: this.quizEngine.questions,
-            timerState: this.quizEngine.timer ? this.quizEngine.timer.getState() : null
+            timerState: this.quizEngine.timer ? this.quizEngine.timer.serialize() : null
         };
     }
 

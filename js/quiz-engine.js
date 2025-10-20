@@ -4,6 +4,7 @@
  */
 class QuizEngine {
     constructor(questionManager, progressTracker) {
+        console.log('QuizEngine constructor called');
         this.questionManager = questionManager;
         this.progressTracker = progressTracker;
         
@@ -27,6 +28,8 @@ class QuizEngine {
         this.onModeSpecificEvent = null;
         this.onTimerTick = null;
         this.onTimerWarning = null;
+        
+        console.log('QuizEngine constructor completed, getCurrentQuestionData method exists:', typeof this.getCurrentQuestionData);
     }
 
     /**
@@ -423,6 +426,27 @@ class QuizEngine {
     getCurrentAnswer() {
         const answer = this.answers[this.currentQuestionIndex];
         return answer ? answer.selectedAnswer : null;
+    }
+
+    /**
+     * Get current question data (same structure as onQuestionChange event)
+     * @returns {Object|null} Current question data or null if no active quiz
+     */
+    getCurrentQuestionData() {
+        if (!this.isActive || this.currentQuestionIndex >= this.questions.length) {
+            return null;
+        }
+
+        return {
+            question: this.getCurrentQuestion(),
+            questionIndex: this.currentQuestionIndex,
+            questionNumber: this.getCurrentQuestionNumber(),
+            totalQuestions: this.getTotalQuestions(),
+            isAnswered: this.isCurrentQuestionAnswered(),
+            currentAnswer: this.getCurrentAnswer(),
+            canGoNext: this.currentQuestionIndex < this.questions.length - 1,
+            canGoPrevious: this.currentQuestionIndex > 0
+        };
     }
 
     /**
