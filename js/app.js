@@ -575,29 +575,34 @@ class App {
      */
     showImmediateFeedback(event) {
         // Remove any existing feedback first
-        const existingFeedback = document.querySelector('.feedback');
+        const existingFeedback = document.querySelector('.answer-feedback');
         if (existingFeedback) {
             existingFeedback.remove();
         }
 
         const feedbackContainer = document.createElement('div');
-        feedbackContainer.className = `feedback ${event.isCorrect ? 'correct' : 'incorrect'}`;
+        feedbackContainer.className = `answer-feedback ${event.isCorrect ? 'correct' : 'incorrect'}`;
         feedbackContainer.innerHTML = `
-            <div class="feedback-result">
-                ${event.isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+            <div class="feedback-header">
+                <div class="feedback-icon">
+                    ${event.isCorrect ? '✓' : '✗'}
+                </div>
+                <div class="feedback-result">
+                    ${event.isCorrect ? 'Correct!' : 'Incorrect'}
+                </div>
             </div>
             ${!event.isCorrect ? `
-                <div class="feedback-answer">
-                    Correct answer: ${event.correctAnswer}
+                <div class="feedback-correct-answer">
+                    <strong>Correct answer:</strong> ${event.correctAnswer}
                 </div>
             ` : ''}
             ${event.explanation ? `
                 <div class="feedback-explanation">
-                    ${event.explanation}
+                    <strong>Explanation:</strong> ${event.explanation}
                 </div>
             ` : ''}
             <div class="feedback-actions">
-                <button id="continue-study-btn" class="control-btn primary">Continue Studying</button>
+                <button id="continue-study-btn" class="feedback-continue-btn">Continue Studying</button>
             </div>
         `;
         
@@ -606,13 +611,15 @@ class App {
         if (questionContainer && questionContainer.parentNode) {
             questionContainer.parentNode.insertBefore(feedbackContainer, questionContainer.nextSibling);
             
-            // Add event listener to continue button
+            // Add event listener to continue button with null check
             const continueBtn = document.getElementById('continue-study-btn');
             if (continueBtn) {
                 continueBtn.addEventListener('click', () => {
                     this.handleStudyModeContinue();
                 });
             }
+        } else {
+            console.error('Question container not found for feedback insertion');
         }
     }
 
@@ -821,14 +828,20 @@ class App {
                 nextBtn.disabled = !data.canGoNext;
             }
             
+            // Hide submit button in practice mode (auto-submit on selection)
+            // Show it in unit mode for manual submission
             if (submitBtn) {
-                submitBtn.style.display = 'inline-block';
-                submitBtn.textContent = data.isAnswered ? 'Change Answer' : 'Submit Answer';
+                if (this.currentMode === 'practice') {
+                    submitBtn.style.display = 'none';
+                } else {
+                    submitBtn.style.display = 'inline-block';
+                    submitBtn.textContent = data.isAnswered ? 'Change Answer' : 'Submit Answer';
+                }
             }
             
             if (endQuizBtn) {
                 endQuizBtn.style.display = 'inline-block';
-                endQuizBtn.textContent = 'End Quiz';
+                endQuizBtn.textContent = this.currentMode === 'practice' ? 'Submit Test' : 'End Quiz';
             }
         }
     }
@@ -845,9 +858,17 @@ class App {
             radio.checked = index === answerIndex;
         });
         
-        // Enable submit button when answer is selected
-        if (this.elements.submitBtn) {
-            this.elements.submitBtn.disabled = false;
+        // Auto-submit in practice mode, enable submit button in other modes
+        if (this.currentMode === 'practice') {
+            // Auto-submit the answer in practice mode
+            setTimeout(() => {
+                this.handleSubmitAnswer();
+            }, 300); // Small delay for visual feedback
+        } else {
+            // Enable submit button when answer is selected in other modes
+            if (this.elements.submitBtn) {
+                this.elements.submitBtn.disabled = false;
+            }
         }
         
         // Update navigation buttons to reflect new state
@@ -1434,22 +1455,11 @@ class App {
      */
     refreshQuizUI() {
         try {
-            console.log('refreshQuizUI called');
-            console.log('this.quizEngine:', this.quizEngine);
-            console.log('this.quizEngine.isActive:', this.quizEngine ? this.quizEngine.isActive : 'N/A');
-            console.log('getCurrentQuestionData method exists:', this.quizEngine ? typeof this.quizEngine.getCurrentQuestionData : 'N/A');
-            
             if (this.quizEngine && this.quizEngine.isActive) {
-                // Check if the method exists before calling it
-                if (typeof this.quizEngine.getCurrentQuestionData === 'function') {
-                    const currentData = this.quizEngine.getCurrentQuestionData();
-                    if (currentData) {
-                        this.updateQuestionDisplay(currentData);
-                        this.updateQuizControls(currentData);
-                    }
-                } else {
-                    console.error('getCurrentQuestionData method not found on quizEngine instance');
-                    console.log('Available methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.quizEngine)));
+                const currentData = this.quizEngine.getCurrentQuestionData();
+                if (currentData) {
+                    this.updateQuestionDisplay(currentData);
+                    this.updateQuizControls(currentData);
                 }
             }
         } catch (error) {
@@ -1623,19 +1633,33 @@ class App {
         try {
             this.quizEngine.submitAnswer(selectedAnswer);
             
+            // Update question status immediately after submission
+            if (this.quizEngine && this.quizEngine.isActive) {
+                const currentData = this.quizEngine.getCurrentQuestionData();
+                if (currentData && this.currentMode !== 'study') {
+                    this.updateQuestionStatus(currentData);
+                }
+            }
+            
             // Handle mode-specific behavior after submission
             if (this.currentMode === 'study') {
                 // Study mode: immediate feedback is shown via event handler
                 // Don't auto-advance, wait for user to click continue
                 console.log('Answer submitted in study mode - waiting for user to continue');
+            } else if (this.currentMode === 'practice') {
+                // Practice mode: auto-advance immediately (no delay needed since it's timed)
+                if (!this.quizEngine.nextQuestion()) {
+                    // No more questions, show completion option
+                    this.showEnhancedCompletionDialog();
+                }
             } else {
-                // Auto-advance to next question in unit and practice modes
+                // Unit mode: brief delay for visual feedback, then auto-advance
                 setTimeout(() => {
                     if (!this.quizEngine.nextQuestion()) {
                         // No more questions, show completion option
                         this.showEnhancedCompletionDialog();
                     }
-                }, 1000);
+                }, 800);
             }
         } catch (error) {
             console.error('Submit error:', error);
@@ -2930,22 +2954,7 @@ class App {
         }
     }
 
-    /**
-     * Show immediate feedback for study mode
-     */
-    showImmediateFeedback(event) {
-        const feedbackHtml = `
-            <div class="immediate-feedback ${event.isCorrect ? 'correct' : 'incorrect'}">
-                <h4>${event.isCorrect ? 'Correct!' : 'Incorrect'}</h4>
-                ${!event.isCorrect ? `<p><strong>Correct answer:</strong> ${event.correctAnswer}</p>` : ''}
-                ${event.explanation ? `<p><strong>Explanation:</strong> ${event.explanation}</p>` : ''}
-                <button onclick="app.continueStudyMode()" class="continue-btn">Continue</button>
-            </div>
-        `;
-        
-        // Show feedback in a modal or overlay
-        this.showModal('Answer Feedback', feedbackHtml);
-    }
+
 
     /**
      * Continue study mode after feedback

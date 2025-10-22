@@ -4,7 +4,6 @@
  */
 class QuizEngine {
     constructor(questionManager, progressTracker) {
-        console.log('QuizEngine constructor called');
         this.questionManager = questionManager;
         this.progressTracker = progressTracker;
         
@@ -28,8 +27,6 @@ class QuizEngine {
         this.onModeSpecificEvent = null;
         this.onTimerTick = null;
         this.onTimerWarning = null;
-        
-        console.log('QuizEngine constructor completed, getCurrentQuestionData method exists:', typeof this.getCurrentQuestionData);
     }
 
     /**
